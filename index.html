@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generative Refocusing: Flexible Defocus Control from a Single Image</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #f5f5f5;
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: 36px;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .meta {
+        text-align: center;
+        margin-bottom: 40px;
+        line-height: 1.4;
+      }
+
+      .section-title {
+        font-size: 32px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 16px;
+        text-align: center;
+        margin-top: 60px;
+      }
+      /* First section title needs less margin */
+      .first-title {
+        margin-top: 0;
+      }
+
+      /* ====== Wild Section Styles (Restoration & Refocus) ====== */
+      .wild-section {
+        width: 100%;
+        max-width: 1200px;
+        margin-bottom: 20px;
+        background: #fff;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+
+      .wild-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+
+      .wild-side-by-side {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .wild-img-box {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .wild-img-box img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        background: #000;
+      }
+
+      .wild-label {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .nav-arrow {
+        background: none;
+        border: none;
+        font-size: 40px;
+        color: #ccc;
+        cursor: pointer;
+        padding: 10px;
+        transition: color 0.2s, transform 0.1s;
+        user-select: none;
+        outline: none;
+        flex-shrink: 0;
+      }
+
+      .nav-arrow:hover {
+        color: #333;
+      }
+      .nav-arrow:active {
+        transform: scale(0.95);
+      }
+
+      .wild-counter {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 14px;
+        color: #666;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ====== Visual Comparison & General Buttons ====== */
+      .task-section {
+        max-width: 1000px;
+        width: 100%;
+        margin-bottom: 40px;
+      }
+
+      .task-toolbar {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .task-btn {
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid #ddd;
+        background: #fff;
+        font-size: 13px;
+        cursor: pointer;
+        color: #555;
+        transition: all 0.2s ease;
+      }
+
+      .task-btn:hover {
+        border-color: #999;
+        color: #000;
+      }
+      .task-btn.active {
+        background: #222;
+        color: #fff;
+        border-color: #222;
+      }
+
+      .task-panel {
+        display: none;
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+      .task-panel.active {
+        display: block;
+      }
+
+      .comp-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+
+      .comp-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .comp-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        margin-right: 4px;
+      }
+
+      .comp-btn {
+        padding: 4px 12px;
+        border-radius: 6px;
+        border: 1px solid #eee;
+        background: #f9f9f9;
+        font-size: 13px;
+        cursor: pointer;
+        color: #555;
+      }
+      .comp-btn:hover {
+        background: #eee;
+      }
+      .comp-btn.active {
+        background: #444;
+        color: #fff;
+        border-color: #444;
+      }
+
+      /* ====== Reusable Slider Styles ====== */
+      .slider-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        cursor: ew-resize;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .slider-layout-img {
+        display: block;
+        width: 100%;
+        height: auto;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .slider-pane {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .slider-pane img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .slider-handle {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        bottom: 0;
+        width: 4px;
+        transform: translateX(-50%);
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .slider-handle-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .slider-handle-knob {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #444;
+      }
+
+      .slider-label {
+        position: absolute;
+        bottom: 16px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 5;
+        backdrop-filter: blur(2px);
+      }
+      .slider-label.left {
+        left: 16px;
+      }
+      .slider-label.right {
+        right: 16px;
+      }
+
+      .placeholder-text {
+        font-size: 13px;
+        color: #666;
+        text-align: center;
+        padding: 40px 0;
+      }
+
+      /* ====== Interactive Viewer ====== */
+      .viewer {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        max-width: 1100px;
+        width: 100%;
+        margin-bottom: 40px;
+      }
+
+      .interactive-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .interactive-col {
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+      }
+
+      .image-container {
+        position: relative;
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+      }
+
+      #mainImage,
+      .static-input-img {
+        display: block;
+        width: 100%;
+        height: auto;
+        cursor: pointer;
+      }
+      .static-input-img {
+        cursor: default;
+      }
+
+      .pointer-overlay {
+        position: absolute;
+        left: 18%;
+        top: 14%;
+        transform: translate(-50%, -50%);
+        opacity: 0.9;
+        pointer-events: none;
+      }
+      .pointer-overlay svg {
+        width: 96px;
+        height: 96px;
+      }
+
+      .instructions {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 14px;
+        color: #555;
+      }
+      .instructions em {
+        color: #c0392b;
+        font-style: normal;
+        font-weight: 600;
+      }
+
+      .controls {
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 8px;
+        justify-content: center;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #kSlider {
+        flex: 1;
+        max-width: 540px;
+      }
+
+      .aperture-icon {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+
+      .hidden-canvas {
+        display: none;
+      }
+
+      /* ====== Ablation Section ====== */
+      .ablation-section {
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto 40px;
+      }
+      .ablation-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      /* ====== Failure Case Section ====== */
+      .failure-section {
+        max-width: 1000px;
+        width: 100%;
+        margin: 0 auto 60px;
+      }
+      .failure-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .static-box {
+        flex: 1;
+        max-width: 480px;
+        min-width: 300px;
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      }
+      .static-box img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .failure-slider-box {
+        flex: 1;
+        max-width: 480px;
+        min-width: 300px;
+        width: 100%;
+      }
+
+      .warning-banner {
+        background: #ffeaea;
+        color: #b00020;
+        padding: 8px 16px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        max-width: 900px;
+      }
+      .warning-banner code {
+        background: rgba(0, 0, 0, 0.04);
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+      /* 描述文字樣式 (共用於 Ablation 和 Failure) */
+      .ablation-description,
+      .failure-description {
+        text-align: center;
+        margin-bottom: 16px;
+        font-size: 14px;
+        color: #555;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Generative Refocusing: Flexible Defocus Control from a Single Image</h1>
+    <div class="meta">
+      <div>Supplementary Material</div>
+      <div>Anonymous authors</div>
+      <div>Submission ID: 6928</div>
+    </div>
+
+    <div class="task-section" style="margin-top: 0; max-width: 1200px">
+      <div class="section-title first-title">Historical Images</div>
+
+      <div class="task-toolbar">
+        <button class="task-btn active" id="btn-wild-restore">All-in-focus estimation</button>
+        <button class="task-btn" id="btn-wild-refocus">Refocusing</button>
+      </div>
+
+      <div id="panel-wild-restore" class="wild-section" style="display: block">
+        <div class="wild-container">
+          <button class="nav-arrow" id="wildPrev">&#10094;</button>
+
+          <div class="wild-side-by-side">
+            <div class="wild-img-box">
+              <img src="" alt="Input" id="wildInputImg" />
+              <div class="wild-label">Input</div>
+            </div>
+
+            <div class="wild-img-box">
+              <img src="" alt="Ours" id="wildOutputImg" />
+              <div class="wild-label">Ours</div>
+            </div>
+          </div>
+
+          <button class="nav-arrow" id="wildNext">&#10095;</button>
+        </div>
+        <div class="wild-counter" id="wildCounter">Case 1 / 1</div>
+      </div>
+
+      <div id="panel-wild-refocus" class="wild-section" style="display: none">
+        <div class="wild-container">
+          <button class="nav-arrow" id="wildRefocusPrev">&#10094;</button>
+
+          <div class="wild-side-by-side">
+            <div class="wild-img-box">
+              <img src="" alt="Input" id="wildRefocusInputImg" />
+              <div class="wild-label">Input</div>
+            </div>
+
+            <div class="wild-img-box">
+              <img src="" alt="Ours" id="wildRefocusOutputImg" />
+              <div class="wild-label">Ours</div>
+            </div>
+          </div>
+
+          <button class="nav-arrow" id="wildRefocusNext">&#10095;</button>
+        </div>
+        <div class="wild-counter" id="wildRefocusCounter">Case 1 / 1</div>
+      </div>
+    </div>
+
+    <div class="task-section" style="margin-top: 40px; max-width: 1200px">
+      <div class="section-title">In-the-wild Images</div>
+
+      <div class="task-toolbar">
+        <button class="task-btn active" id="btn-itw-restore">All-in-focus estimation</button>
+        <button class="task-btn" id="btn-itw-refocus">Refocusing</button>
+      </div>
+
+      <div id="panel-itw-restore" class="wild-section" style="display: block">
+        <div class="wild-container">
+          <button class="nav-arrow" id="itwPrev">&#10094;</button>
+
+          <div class="wild-side-by-side">
+            <div class="wild-img-box">
+              <img src="" alt="Input" id="itwInputImg" />
+              <div class="wild-label">Input</div>
+            </div>
+
+            <div class="wild-img-box">
+              <img src="" alt="Ours" id="itwOutputImg" />
+              <div class="wild-label">Ours</div>
+            </div>
+          </div>
+
+          <button class="nav-arrow" id="itwNext">&#10095;</button>
+        </div>
+        <div class="wild-counter" id="itwCounter">Case 0 / 0</div>
+      </div>
+
+      <div id="panel-itw-refocus" class="wild-section" style="display: none">
+        <div class="wild-container">
+          <button class="nav-arrow" id="itwRefocusPrev">&#10094;</button>
+
+          <div class="wild-side-by-side">
+            <div class="wild-img-box">
+              <img src="" alt="Input" id="itwRefocusInputImg" />
+              <div class="wild-label">Input</div>
+            </div>
+
+            <div class="wild-img-box">
+              <img src="" alt="Ours" id="itwRefocusOutputImg" />
+              <div class="wild-label">Ours</div>
+            </div>
+          </div>
+
+          <button class="nav-arrow" id="itwRefocusNext">&#10095;</button>
+        </div>
+        <div class="wild-counter" id="itwRefocusCounter">Case 1 / 6</div>
+      </div>
+    </div>
+
+    <div class="section-title">Interactive Refocusing</div>
+    <div class="viewer">
+      <div class="interactive-row">
+        <div class="interactive-col">
+          <div class="image-container">
+            <img class="static-input-img" src="static/case_1/original_input.png" alt="Input Image" />
+          </div>
+          <div class="instructions">Input Image</div>
+        </div>
+
+        <div class="interactive-col">
+          <div class="image-container">
+            <img
+              id="mainImage"
+              src="static/case_1/input/1/infocus_2_half_2_crop512__1_K15.0.png"
+              alt="Generative refocusing demo"
+            />
+            <div class="pointer-overlay" id="pointerOverlay">
+              <svg viewBox="0 0 64 64">
+                <circle cx="20" cy="20" r="10" fill="none" stroke="#000" stroke-width="3" opacity="0.4"></circle>
+                <path
+                  d="M24 34 L24 16
+                           C24 13 26 11 29 11
+                           C32 11 34 13 34 16
+                           L34 32
+                           L36 26
+                           C37 24 39 23 41 24
+                           C43 25 44 27 44 29
+                           L44 37
+                           L46 34
+                           C47 32 49 31 51 32
+                           C53 33 54 35 54 37
+                           L54 45
+                           C54 52 49 57 42 57
+                           L32 57
+                           C28 57 25 55 23 52
+                           L18 44
+                           C17 43 16 41 16 39
+                           C16 36 18 34 21 34
+                           Z"
+                  fill="#ffffff"
+                  stroke="#000000"
+                  stroke-width="2"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <div class="instructions">
+            <div><em>Click</em> on a subject to refocus</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <img src="static/aperture_icon/small.png" alt="Small" class="aperture-icon" />
+        <input type="range" id="kSlider" min="0" max="10" step="1" value="8" />
+        <img src="static/aperture_icon/large.png" alt="Large" class="aperture-icon" />
+      </div>
+    </div>
+
+    <div class="task-section">
+      <div class="section-title">Visual Comparison</div>
+      <div class="task-toolbar">
+        <button class="task-btn active" data-task="defocus">Defocus deblur</button>
+        <button class="task-btn" data-task="bokeh">Bokeh synthesis</button>
+        <button class="task-btn" data-task="refocus">Refocusing</button>
+      </div>
+
+      <div id="task-defocus" class="task-panel active">
+        <div class="comp-controls">
+          <div class="comp-row" id="caseButtons">
+            <span class="comp-label">Case:</span>
+          </div>
+          <div class="comp-row" id="methodButtons">
+            <span class="comp-label">Method:</span>
+          </div>
+        </div>
+
+        <div class="slider-container" id="comparisonSlider">
+          <img src="" alt="" class="slider-layout-img" id="compLayoutImg" />
+          <div class="slider-pane pane-left">
+            <img src="" alt="Method" id="compLeftImg" />
+          </div>
+          <div class="slider-pane pane-right">
+            <img src="" alt="Ours" id="compRightImg" />
+          </div>
+          <div class="slider-handle">
+            <div class="slider-handle-line"></div>
+            <div class="slider-handle-knob">&#9664;&#9654;</div>
+          </div>
+          <div class="slider-label left" id="compLabelLeft">Method</div>
+          <div class="slider-label right">Ours</div>
+        </div>
+      </div>
+
+      <div id="task-bokeh" class="task-panel">
+        <div class="comp-controls">
+          <div class="comp-row" id="bokehCaseButtons">
+            <span class="comp-label">Case:</span>
+          </div>
+          <div class="comp-row" id="bokehMethodButtons">
+            <span class="comp-label">Method:</span>
+          </div>
+        </div>
+        <div class="slider-container" id="bokehSlider">
+          <img src="" alt="" class="slider-layout-img" id="bokehLayoutImg" />
+          <div class="slider-pane pane-left">
+            <img src="" alt="Method" id="bokehLeftImg" />
+          </div>
+          <div class="slider-pane pane-right">
+            <img src="" alt="Ours" id="bokehRightImg" />
+          </div>
+          <div class="slider-handle">
+            <div class="slider-handle-line"></div>
+            <div class="slider-handle-knob">&#9664;&#9654;</div>
+          </div>
+          <div class="slider-label left" id="bokehLabelLeft">Method</div>
+          <div class="slider-label right">Ours</div>
+        </div>
+      </div>
+
+      <div id="task-refocus" class="task-panel">
+        <div class="comp-controls">
+          <div class="comp-row" id="refocusCaseButtons">
+            <span class="comp-label">Case:</span>
+          </div>
+          <div class="comp-row" id="refocusMethodButtons">
+            <span class="comp-label">Method:</span>
+          </div>
+        </div>
+        <div class="slider-container" id="refocusSlider">
+          <img src="" alt="" class="slider-layout-img" id="refocusLayoutImg" />
+          <div class="slider-pane pane-left">
+            <img src="" alt="Method" id="refocusLeftImg" />
+          </div>
+          <div class="slider-pane pane-right">
+            <img src="" alt="Ours" id="refocusRightImg" />
+          </div>
+          <div class="slider-handle">
+            <div class="slider-handle-line"></div>
+            <div class="slider-handle-knob">&#9664;&#9654;</div>
+          </div>
+          <div class="slider-label left" id="refocusLabelLeft">Method</div>
+          <div class="slider-label right">Ours</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ablation-section">
+      <div class="ablation-title">Visual Comparison for BokehNet Training Ablation</div>
+
+      <div class="ablation-description">
+        Training solely on synthetic data tends to result in an incorrect depth scale, leading to excessive bokeh
+        strength and noticeable artifacts along object boundaries.
+      </div>
+
+      <div class="comp-controls">
+        <div class="comp-row" id="ablationButtons">
+          <span class="comp-label">Case:</span>
+        </div>
+      </div>
+
+      <div class="slider-container" id="ablationSlider">
+        <img
+          src="static/ablation_w_or_wo_real_pair/synthetic/0.png"
+          class="slider-layout-img"
+          id="ablationLayoutImg"
+          alt=""
+        />
+
+        <div class="slider-pane pane-left">
+          <img src="static/ablation_w_or_wo_real_pair/synthetic/0.png" id="ablationLeftImg" alt="Synthetic pair" />
+        </div>
+
+        <div class="slider-pane pane-right">
+          <img src="static/ablation_w_or_wo_real_pair/real_pair/0.png" id="ablationRightImg" alt="With real pairs" />
+        </div>
+
+        <div class="slider-handle">
+          <div class="slider-handle-line"></div>
+          <div class="slider-handle-knob">&#9664;&#9654;</div>
+        </div>
+        <div class="slider-label left">Synthetic pair</div>
+        <div class="slider-label right">+ Real unpair</div>
+      </div>
+    </div>
+
+    <div class="failure-section">
+      <div class="section-title">Failure Cases</div>
+
+      <div class="failure-description">
+        For severely blurred inputs, the model may hallucinate incorrect details (e.g., reconstructing "Jewelry shop" as
+        "Temnlry shop").
+      </div>
+
+      <div class="comp-controls">
+        <div class="comp-row" id="failureButtons"></div>
+      </div>
+
+      <div class="failure-row">
+        <div class="static-box">
+          <img id="failureInputImg" src="" alt="Input Image" />
+          <div class="slider-label left" style="left: 50%; transform: translateX(-50%)">Input image</div>
+        </div>
+
+        <div class="slider-container failure-slider-box" id="failureSlider">
+          <img src="" alt="" class="slider-layout-img" id="failureLayoutImg" />
+          <div class="slider-pane pane-left">
+            <img src="" alt="GT" id="failureLeftImg" />
+          </div>
+          <div class="slider-pane pane-right">
+            <img src="" alt="Ours" id="failureRightImg" />
+          </div>
+          <div class="slider-handle">
+            <div class="slider-handle-line"></div>
+            <div class="slider-handle-knob">&#9664;&#9654;</div>
+          </div>
+          <div class="slider-label left">GT</div>
+          <div class="slider-label right">Ours</div>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="maskCanvas_-1" class="hidden-canvas"></canvas>
+    <canvas id="maskCanvas_1" class="hidden-canvas"></canvas>
+    <canvas id="maskCanvas_2" class="hidden-canvas"></canvas>
+
+    <script>
+      // ===== Generic Slider Logic =====
+      function setupSlider(containerId) {
+        const slider = document.getElementById(containerId)
+        if (!slider) return
+
+        const leftPane = slider.querySelector('.pane-left')
+        const rightPane = slider.querySelector('.pane-right')
+        const handle = slider.querySelector('.slider-handle')
+
+        if (!leftPane || !rightPane || !handle) return
+
+        let isDragging = false
+
+        function applyRatio(ratio) {
+          ratio = Math.max(0, Math.min(1, ratio))
+          const percentage = ratio * 100
+
+          leftPane.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`
+          rightPane.style.clipPath = `inset(0 0 0 ${percentage}%)`
+          handle.style.left = `${percentage}%`
+        }
+
+        function getRatioFromEvent(e) {
+          const rect = slider.getBoundingClientRect()
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX
+          let x = clientX - rect.left
+          x = Math.max(0, Math.min(x, rect.width))
+          return x / rect.width
+        }
+
+        function onPointerDown(e) {
+          isDragging = true
+          applyRatio(getRatioFromEvent(e))
+          e.preventDefault()
+        }
+
+        function onPointerMove(e) {
+          if (!isDragging) return
+          applyRatio(getRatioFromEvent(e))
+        }
+
+        function onPointerUp() {
+          isDragging = false
+        }
+
+        slider.addEventListener('mousedown', onPointerDown)
+        slider.addEventListener('touchstart', onPointerDown, { passive: false })
+        window.addEventListener('mousemove', onPointerMove)
+        window.addEventListener('touchmove', onPointerMove, { passive: false })
+        window.addEventListener('mouseup', onPointerUp)
+        window.addEventListener('touchend', onPointerUp)
+
+        applyRatio(0.5)
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if (location.protocol === 'file:') {
+          const banner = document.createElement('div')
+        }
+
+        // ==========================================
+        // 1. Historical Image Restoration (Existing)
+        // ==========================================
+        const WILD_FILES = [
+          'apollo11_shake_hand.jpg',
+          'Dianna.jpg',
+          'kid.png',
+          'wweii_nurse.jpg',
+          'family.jpg',
+          'Dianna_2.jpg',
+          'queen_black.jpg',
+        ]
+
+        let currentWildIndex = 0
+        let autoPlayInterval = null
+        const AUTO_PLAY_DELAY = 10000
+
+        const wildInputImg = document.getElementById('wildInputImg')
+        const wildOutputImg = document.getElementById('wildOutputImg')
+        const wildCounter = document.getElementById('wildCounter')
+        const btnPrev = document.getElementById('wildPrev')
+        const btnNext = document.getElementById('wildNext')
+
+        function updateWild() {
+          if (WILD_FILES.length === 0) return
+          const filename = WILD_FILES[currentWildIndex]
+          wildInputImg.src = `static/Historical/AIF/input/${filename}`
+          wildOutputImg.src = `static/Historical/AIF/output/${filename}`
+          wildCounter.textContent = `Case ${currentWildIndex + 1} / ${WILD_FILES.length}`
+        }
+
+        function nextWild() {
+          currentWildIndex = (currentWildIndex + 1) % WILD_FILES.length
+          updateWild()
+        }
+
+        function prevWild() {
+          currentWildIndex = (currentWildIndex - 1 + WILD_FILES.length) % WILD_FILES.length
+          updateWild()
+        }
+
+        function startAutoPlay() {
+          if (autoPlayInterval) clearInterval(autoPlayInterval)
+          autoPlayInterval = setInterval(nextWild, AUTO_PLAY_DELAY)
+        }
+
+        btnPrev.addEventListener('click', () => {
+          prevWild()
+          startAutoPlay()
+        })
+        btnNext.addEventListener('click', () => {
+          nextWild()
+          startAutoPlay()
+        })
+
+        if (WILD_FILES.length > 0) {
+          updateWild()
+          startAutoPlay()
+        }
+
+        // ==========================================
+        // 2. Historical Image Refocus (NEW)
+        // ==========================================
+
+        const REFOCUS_WILD_FILES = ['fashion_1980.jpg', 'beach.png']
+
+        let currentRefocusWildIndex = 0
+        const wildRefocusInputImg = document.getElementById('wildRefocusInputImg')
+        const wildRefocusOutputImg = document.getElementById('wildRefocusOutputImg')
+        const wildRefocusCounter = document.getElementById('wildRefocusCounter')
+        const btnRefocusPrev = document.getElementById('wildRefocusPrev')
+        const btnRefocusNext = document.getElementById('wildRefocusNext')
+
+        function updateRefocusWild() {
+          if (REFOCUS_WILD_FILES.length === 0) return
+          const filename = REFOCUS_WILD_FILES[currentRefocusWildIndex]
+
+          wildRefocusInputImg.src = `static/Historical/Refocus/input/${filename}`
+          wildRefocusOutputImg.src = `static/Historical/Refocus/output/${filename}`
+
+          wildRefocusCounter.textContent = `Case ${currentRefocusWildIndex + 1} / ${REFOCUS_WILD_FILES.length}`
+        }
+
+        function nextRefocusWild() {
+          currentRefocusWildIndex = (currentRefocusWildIndex + 1) % REFOCUS_WILD_FILES.length
+          updateRefocusWild()
+        }
+
+        function prevRefocusWild() {
+          currentRefocusWildIndex =
+            (currentRefocusWildIndex - 1 + REFOCUS_WILD_FILES.length) % REFOCUS_WILD_FILES.length
+          updateRefocusWild()
+        }
+
+        btnRefocusPrev.addEventListener('click', prevRefocusWild)
+        btnRefocusNext.addEventListener('click', nextRefocusWild)
+
+        if (REFOCUS_WILD_FILES.length > 0) {
+          updateRefocusWild()
+        }
+
+        // ==========================================
+        // 3. Defocus Deblur Comparison Logic
+        // ==========================================
+        const DEBLUR_CASES = [
+          'case_4',
+          'case_2',
+          'case_5',
+          'case_3',
+          'case_0',
+          'case_1',
+          'case_6',
+          'case_7',
+          'case_8',
+          'case_9',
+        ]
+        const DEBLUR_METHODS = [
+          { key: 'Input', label: 'Input' },
+          { key: 'GT', label: 'GT' },
+          { key: 'AIFNet', label: 'AIFNet' },
+          { key: 'IFANet', label: 'IFANet' },
+          { key: 'DRBNet', label: 'DRBNet' },
+          { key: 'Restformer', label: 'Restormer' },
+          { key: 'INIKNet', label: 'INIKNet' },
+        ]
+
+        let currentDeblurCase = DEBLUR_CASES[0]
+        let currentDeblurMethod = DEBLUR_METHODS[0].key
+
+        const deblurCaseBtns = document.getElementById('caseButtons')
+        const deblurMethodBtns = document.getElementById('methodButtons')
+        const deblurLayoutImg = document.getElementById('compLayoutImg')
+        const deblurLeftImg = document.getElementById('compLeftImg')
+        const deblurRightImg = document.getElementById('compRightImg')
+        const deblurLabelLeft = document.getElementById('compLabelLeft')
+
+        function updateDeblurComp() {
+          const leftSrc = `static/AIF/${currentDeblurCase}/${currentDeblurMethod}.jpg`
+          const rightSrc = `static/AIF/${currentDeblurCase}/Ours.jpg`
+
+          deblurLeftImg.src = leftSrc
+          deblurRightImg.src = rightSrc
+          deblurLayoutImg.src = rightSrc
+
+          const methodObj = DEBLUR_METHODS.find((m) => m.key === currentDeblurMethod)
+          deblurLabelLeft.textContent = methodObj ? methodObj.label : currentDeblurMethod
+        }
+
+        DEBLUR_CASES.forEach((c, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (c === currentDeblurCase ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentDeblurCase = c
+            Array.from(deblurCaseBtns.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateDeblurComp()
+          }
+          deblurCaseBtns.appendChild(btn)
+        })
+
+        DEBLUR_METHODS.forEach((m) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (m.key === currentDeblurMethod ? ' active' : '')
+          btn.textContent = m.label
+          btn.onclick = () => {
+            currentDeblurMethod = m.key
+            Array.from(deblurMethodBtns.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateDeblurComp()
+          }
+          deblurMethodBtns.appendChild(btn)
+        })
+
+        updateDeblurComp()
+        setupSlider('comparisonSlider')
+
+        // ==========================================
+        // 4. Bokeh Synthesis Comparison Logic
+        // ==========================================
+        const BOKEH_CASES = [
+          'case_2',
+          'case_3',
+          'case_0',
+          'case_10',
+          'case_1',
+          'case_11',
+          'case_6',
+          'case_7',
+          'case_8',
+          'case_9',
+        ]
+        const BOKEH_METHODS = [
+          { key: 'Input', label: 'Input' },
+          { key: 'GT', label: 'GT' },
+          { key: 'BokehMe', label: 'BokehMe' },
+          { key: 'BokehDiff', label: 'BokehDiff' },
+          { key: 'Bokehlicious', label: 'Bokehlicious' },
+        ]
+
+        let currentBokehCase = BOKEH_CASES[0]
+        let currentBokehMethod = BOKEH_METHODS[0].key
+
+        const bokehCaseBtns = document.getElementById('bokehCaseButtons')
+        const bokehMethodBtns = document.getElementById('bokehMethodButtons')
+        const bokehLayoutImg = document.getElementById('bokehLayoutImg')
+        const bokehLeftImg = document.getElementById('bokehLeftImg')
+        const bokehRightImg = document.getElementById('bokehRightImg')
+        const bokehLabelLeft = document.getElementById('bokehLabelLeft')
+
+        function updateBokehComp() {
+          const leftSrc = `static/Bokeh_synthesis/${currentBokehCase}/${currentBokehMethod}.jpg`
+          const rightSrc = `static/Bokeh_synthesis/${currentBokehCase}/Ours.jpg`
+          bokehLeftImg.src = leftSrc
+          bokehRightImg.src = rightSrc
+          bokehLayoutImg.src = rightSrc
+          const methodObj = BOKEH_METHODS.find((m) => m.key === currentBokehMethod)
+          bokehLabelLeft.textContent = methodObj ? methodObj.label : currentBokehMethod
+        }
+
+        BOKEH_CASES.forEach((c, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (c === currentBokehCase ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentBokehCase = c
+            Array.from(bokehCaseBtns.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateBokehComp()
+          }
+          bokehCaseBtns.appendChild(btn)
+        })
+
+        BOKEH_METHODS.forEach((m) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (m.key === currentBokehMethod ? ' active' : '')
+          btn.textContent = m.label
+          btn.onclick = () => {
+            currentBokehMethod = m.key
+            Array.from(bokehMethodBtns.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateBokehComp()
+          }
+          bokehMethodBtns.appendChild(btn)
+        })
+
+        updateBokehComp()
+        setupSlider('bokehSlider')
+
+        // ==========================================
+        // 5. Refocusing Comparison Logic
+        // ==========================================
+        const REFOCUS_DATA = [
+          { label: 'Case 1', folder: 'case_9' },
+          { label: 'Case 2', folder: 'case_8' },
+          { label: 'Case 3', folder: 'case_7' },
+          { label: 'Case 4', folder: 'case_6' },
+          { label: 'Case 5', folder: 'case_5' },
+          { label: 'Case 6', folder: 'case_4' },
+          { label: 'Case 7', folder: 'case_3' },
+          { label: 'Case 8', folder: 'case_2' },
+          { label: 'Case 9', folder: 'case_1' },
+          { label: 'Case 10', folder: 'case_0' },
+        ]
+        const REFOCUS_METHODS = [
+          { key: 'Input.jpg', label: 'Input' },
+          { key: 'GT.jpg', label: 'GT' },
+          { key: 'DRBNetXbokehdiff.jpg', label: 'DRBNet × BokehDiff' },
+          { key: 'DRBNetXbokehme.jpg', label: 'DRBNet × BokehMe' },
+          { key: 'RestformerXbokehdiff.jpg', label: 'Restormer × BokehDiff' },
+          { key: 'RestformerXbokehme.jpg', label: 'Restormer × BokehMe' },
+        ]
+
+        let currentRefocusFolder = REFOCUS_DATA[0].folder
+        let currentRefocusBtnLabel = REFOCUS_DATA[0].label
+        let currentRefocusMethod = REFOCUS_METHODS[0].key
+
+        const refocusCaseBtns = document.getElementById('refocusCaseButtons')
+        const refocusMethodBtns = document.getElementById('refocusMethodButtons')
+        const refocusLayoutImg = document.getElementById('refocusLayoutImg')
+        const refocusLeftImg = document.getElementById('refocusLeftImg')
+        const refocusRightImg = document.getElementById('refocusRightImg')
+        const refocusLabelLeft = document.getElementById('refocusLabelLeft')
+
+        function updateRefocusComp() {
+          const leftSrc = `static/Refocusing/${currentRefocusFolder}/${currentRefocusMethod}`
+          const rightSrc = `static/Refocusing/${currentRefocusFolder}/ours.jpg`
+          refocusLeftImg.src = leftSrc
+          refocusRightImg.src = rightSrc
+          refocusLayoutImg.src = rightSrc
+          const methodObj = REFOCUS_METHODS.find((m) => m.key === currentRefocusMethod)
+          refocusLabelLeft.textContent = methodObj ? methodObj.label : currentRefocusMethod
+        }
+
+        REFOCUS_DATA.forEach((item) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (item.label === currentRefocusBtnLabel ? ' active' : '')
+          btn.textContent = item.label
+          btn.onclick = () => {
+            currentRefocusFolder = item.folder
+            currentRefocusBtnLabel = item.label
+            Array.from(refocusCaseBtns.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateRefocusComp()
+          }
+          refocusCaseBtns.appendChild(btn)
+        })
+
+        REFOCUS_METHODS.forEach((m) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (m.key === currentRefocusMethod ? ' active' : '')
+          btn.textContent = m.label
+          btn.onclick = () => {
+            currentRefocusMethod = m.key
+            Array.from(refocusMethodBtns.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateRefocusComp()
+          }
+          refocusMethodBtns.appendChild(btn)
+        })
+
+        updateRefocusComp()
+        setupSlider('refocusSlider')
+
+        // ==========================================
+        // 6. Ablation Slider (UPDATED Logic)
+        // ==========================================
+        const ABLATION_CASES = ['0', '1', '2'] // Corresponds to 0.png, 1.png, 2.png
+        let currentAblationIndex = 0
+
+        const ablationBtnsContainer = document.getElementById('ablationButtons')
+        const ablationLayoutImg = document.getElementById('ablationLayoutImg')
+        const ablationLeftImg = document.getElementById('ablationLeftImg')
+        const ablationRightImg = document.getElementById('ablationRightImg')
+
+        function updateAblation() {
+          const caseName = ABLATION_CASES[currentAblationIndex]
+          // Path structure: static/ablation_w_or_wo_real_pair/{folder}/{case}.png
+          const leftSrc = `static/ablation_w_or_wo_real_pair/synthetic/${caseName}.png`
+          const rightSrc = `static/ablation_w_or_wo_real_pair/real_pair/${caseName}.png`
+
+          ablationLeftImg.src = leftSrc
+          ablationRightImg.src = rightSrc
+          // Layout image ensures container has correct aspect ratio
+          ablationLayoutImg.src = leftSrc
+        }
+
+        // Generate Ablation Buttons
+        ABLATION_CASES.forEach((c, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (idx === currentAblationIndex ? ' active' : '')
+          btn.textContent = `Case ${idx}`
+          btn.onclick = () => {
+            currentAblationIndex = idx
+            Array.from(ablationBtnsContainer.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateAblation()
+          }
+          ablationBtnsContainer.appendChild(btn)
+        })
+
+        // Initial update
+        updateAblation()
+        setupSlider('ablationSlider')
+
+        // ==========================================
+        // 7. Failure Case Logic
+        // ==========================================
+        const FAILURE_CASES = [
+          { key: 'hallucinate_details', label: 'Hallucinated Details' },
+          { key: 'wrong_bokeh_blur', label: 'Wrong Bokeh Blur' },
+        ]
+        let currentFailureCase = FAILURE_CASES[0].key
+        const failureBtnsContainer = document.getElementById('failureButtons')
+        const failureInputImg = document.getElementById('failureInputImg')
+        const failureLayoutImg = document.getElementById('failureLayoutImg')
+        const failureLeftImg = document.getElementById('failureLeftImg')
+        const failureRightImg = document.getElementById('failureRightImg')
+
+        function updateFailureCase() {
+          failureInputImg.src = `static/failure_case/${currentFailureCase}/input.png`
+          failureLeftImg.src = `static/failure_case/${currentFailureCase}/GT.png`
+          failureRightImg.src = `static/failure_case/${currentFailureCase}/Ours.png`
+          failureLayoutImg.src = `static/failure_case/${currentFailureCase}/Ours.png`
+        }
+
+        FAILURE_CASES.forEach((item) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (item.key === currentFailureCase ? ' active' : '')
+          btn.textContent = item.label
+          btn.onclick = () => {
+            currentFailureCase = item.key
+            Array.from(failureBtnsContainer.children).forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateFailureCase()
+          }
+          failureBtnsContainer.appendChild(btn)
+        })
+        updateFailureCase()
+        setupSlider('failureSlider')
+
+        // ==========================================
+        // 8. Tab Logic
+        // ==========================================
+        const taskButtons = document.querySelectorAll('.task-btn[data-task]')
+
+        const taskPanels = {
+          defocus: document.getElementById('task-defocus'),
+          bokeh: document.getElementById('task-bokeh'),
+          refocus: document.getElementById('task-refocus'),
+        }
+
+        taskButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const task = btn.getAttribute('data-task')
+
+            taskButtons.forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+
+            Object.keys(taskPanels).forEach((key) => {
+              if (taskPanels[key]) {
+                taskPanels[key].classList.toggle('active', key === task)
+              }
+            })
+          })
+        })
+
+        // ==========================================
+        // 9. Interactive Refocusing Logic (Base64 Version)
+        // ==========================================
+        const REGIONS = ['-1', '1', '2']
+        const K_FILES = ['0', '1.0', '3.0', '5.0', '7.0', '9.0', '11.0', '13.0', '15.0', '17.0', '19.0']
+        let currentRegion = '1'
+        let currentKIndex = 8
+        const mainImage = document.getElementById('mainImage')
+        const kSlider = document.getElementById('kSlider')
+        const pointerOverlay = document.getElementById('pointerOverlay')
+
+        const MASK_DATA = {
+          '-1': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAAAAADRE4smAAABwUlEQVR4nO3bwWrCQBiF0Rnp+7/ydGFpoCZjE20H/nvORhEXgfvBSNTWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBz+uoLYKEhgGSjNQHkGvcHASQa21MBZBk/XxBAkof5BZBkZ34B5Nidv7Xb/14FqxzsL4AQR/sLIMPh/gKIcLy/ANIJIJwAAkxOAAGkE0CA2d0+AQRwBGSb7S+A+qb7C6C8+f6+Daxi27l//9bzyfZf76aC32y9SwAFXF6/+QxQwSv7t493XQUr9csZOALquJSAAAo5X0B3BITqD0+o4PxdHwEU5t+fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf+oTysAcIOHSlqMAAAAASUVORK5CYII=',
+          1: 'data:image/png;base64,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',
+          2: 'data:image/png;base64,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',
+        }
+
+        const masks = {}
+        let masksLoaded = 0
+
+        REGIONS.forEach((r) => {
+          const img = new Image()
+          if (MASK_DATA[r]) {
+            img.src = MASK_DATA[r]
+          } else {
+            console.error('Missing mask data for region:', r)
+          }
+
+          img.onload = () => {
+            const canvas = document.getElementById(`maskCanvas_${r}`)
+            canvas.width = img.naturalWidth
+            canvas.height = img.naturalHeight
+            canvas.getContext('2d').drawImage(img, 0, 0)
+            masks[r] = canvas
+            masksLoaded++
+          }
+        })
+
+        function updateInteractiveImage() {
+          mainImage.src = `static/case_1/input/${currentRegion}/infocus_2_half_2_crop512__${currentRegion}_K${K_FILES[currentKIndex]}.png`
+        }
+
+        kSlider.addEventListener('input', (e) => {
+          currentKIndex = parseInt(e.target.value, 10)
+          updateInteractiveImage()
+        })
+
+        mainImage.addEventListener('click', (e) => {
+          if (masksLoaded < REGIONS.length) return
+
+          const rect = mainImage.getBoundingClientRect()
+          const x = e.clientX - rect.left
+          const y = e.clientY - rect.top
+
+          for (const r of REGIONS) {
+            if (!masks[r]) continue
+
+            const maskCanvas = masks[r]
+            const scaleX = maskCanvas.width / rect.width
+            const scaleY = maskCanvas.height / rect.height
+
+            const ctx = maskCanvas.getContext('2d')
+            const p = ctx.getImageData(x * scaleX, y * scaleY, 1, 1).data
+
+            if ((p[0] + p[1] + p[2]) / 3 > 10) {
+              currentRegion = r
+              pointerOverlay.style.display = 'none'
+              updateInteractiveImage()
+              break
+            }
+          }
+        })
+      })
+      // ==========================================
+      // 10. In-the-wild Tab Logic (Merged Section)
+      // ==========================================
+      const wildRestoreBtn = document.getElementById('btn-wild-restore')
+      const wildRefocusBtn = document.getElementById('btn-wild-refocus')
+      const wildRestorePanel = document.getElementById('panel-wild-restore')
+      const wildRefocusPanel = document.getElementById('panel-wild-refocus')
+
+      wildRestoreBtn.addEventListener('click', () => {
+        wildRestoreBtn.classList.add('active')
+        wildRefocusBtn.classList.remove('active')
+        wildRestorePanel.style.display = 'block'
+        wildRefocusPanel.style.display = 'none'
+      })
+
+      wildRefocusBtn.addEventListener('click', () => {
+        wildRefocusBtn.classList.add('active')
+        wildRestoreBtn.classList.remove('active')
+        wildRestorePanel.style.display = 'none'
+        wildRefocusPanel.style.display = 'block'
+      })
+      // ==========================================
+      // 11. NEW In-the-wild Images Logic (Auto-Play Added)
+      // ==========================================
+
+      // --- Part A: Data Definition ---
+      const ITW_RESTORE_FILES = ['female.jpg', 'high_angle_people.jpg', 'kovil.jpg', 'toy-bricks.jpg']
+      const ITW_REFOCUS_FILES = [
+        'happy-friends.jpg',
+        'photographer.jpg',
+        'female.jpg',
+        'alphabet.jpg',
+        'status.jpg',
+        'white_flower_red_dress.jpg',
+      ]
+
+      let itwRestoreInterval = null
+      let itwRefocusInterval = null
+
+      // --- Part B: Logic for Refocusing Tab ---
+      let currentItwRefocusIndex = 0
+      const itwRefocusInputImg = document.getElementById('itwRefocusInputImg')
+      const itwRefocusOutputImg = document.getElementById('itwRefocusOutputImg')
+      const itwRefocusCounter = document.getElementById('itwRefocusCounter')
+      const btnItwRefocusPrev = document.getElementById('itwRefocusPrev')
+      const btnItwRefocusNext = document.getElementById('itwRefocusNext')
+
+      function updateItwRefocus() {
+        if (ITW_REFOCUS_FILES.length === 0) return
+        const filename = ITW_REFOCUS_FILES[currentItwRefocusIndex]
+
+        itwRefocusInputImg.src = `static/in-the-wild/Refocusing/input/${filename}`
+        itwRefocusOutputImg.src = `static/in-the-wild/Refocusing/output/${filename}`
+        itwRefocusCounter.textContent = `Case ${currentItwRefocusIndex + 1} / ${ITW_REFOCUS_FILES.length}`
+      }
+
+      function nextItwRefocus() {
+        currentItwRefocusIndex = (currentItwRefocusIndex + 1) % ITW_REFOCUS_FILES.length
+        updateItwRefocus()
+      }
+
+      function prevItwRefocus() {
+        currentItwRefocusIndex = (currentItwRefocusIndex - 1 + ITW_REFOCUS_FILES.length) % ITW_REFOCUS_FILES.length
+        updateItwRefocus()
+      }
+
+      function startItwRefocusAutoPlay() {
+        if (itwRefocusInterval) clearInterval(itwRefocusInterval)
+        itwRefocusInterval = setInterval(nextItwRefocus, AUTO_PLAY_DELAY)
+      }
+
+      if (btnItwRefocusPrev && btnItwRefocusNext) {
+        btnItwRefocusPrev.addEventListener('click', () => {
+          prevItwRefocus()
+          startItwRefocusAutoPlay()
+        })
+        btnItwRefocusNext.addEventListener('click', () => {
+          nextItwRefocus()
+          startItwRefocusAutoPlay()
+        })
+      }
+
+      // --- Part C: Logic for Restoration Tab ---
+      let currentItwIndex = 0
+      const itwInputImg = document.getElementById('itwInputImg')
+      const itwOutputImg = document.getElementById('itwOutputImg')
+      const itwCounter = document.getElementById('itwCounter')
+      const btnItwPrev = document.getElementById('itwPrev')
+      const btnItwNext = document.getElementById('itwNext')
+
+      function updateItwRestore() {
+        if (ITW_RESTORE_FILES.length === 0) return
+        const filename = ITW_RESTORE_FILES[currentItwIndex]
+
+        itwInputImg.src = `static/in-the-wild/AIF/input/${filename}`
+        itwOutputImg.src = `static/in-the-wild/AIF/output/${filename}`
+        itwCounter.textContent = `Case ${currentItwIndex + 1} / ${ITW_RESTORE_FILES.length}`
+      }
+
+      function nextItwRestore() {
+        currentItwIndex = (currentItwIndex + 1) % ITW_RESTORE_FILES.length
+        updateItwRestore()
+      }
+
+      function prevItwRestore() {
+        currentItwIndex = (currentItwIndex - 1 + ITW_RESTORE_FILES.length) % ITW_RESTORE_FILES.length
+        updateItwRestore()
+      }
+
+      function startItwRestoreAutoPlay() {
+        if (itwRestoreInterval) clearInterval(itwRestoreInterval)
+        itwRestoreInterval = setInterval(nextItwRestore, AUTO_PLAY_DELAY)
+      }
+
+      if (btnItwPrev && btnItwNext) {
+        btnItwPrev.addEventListener('click', () => {
+          prevItwRestore()
+          startItwRestoreAutoPlay()
+        })
+        btnItwNext.addEventListener('click', () => {
+          nextItwRestore()
+          startItwRestoreAutoPlay()
+        })
+      }
+
+      // --- Part D: Tab Switching Logic for New Section ---
+      const btnItwTabRestore = document.getElementById('btn-itw-restore')
+      const btnItwTabRefocus = document.getElementById('btn-itw-refocus')
+      const panelItwRestore = document.getElementById('panel-itw-restore')
+      const panelItwRefocus = document.getElementById('panel-itw-refocus')
+
+      btnItwTabRestore.addEventListener('click', () => {
+        btnItwTabRestore.classList.add('active')
+        btnItwTabRefocus.classList.remove('active')
+        panelItwRestore.style.display = 'block'
+        panelItwRefocus.style.display = 'none'
+
+        if (ITW_RESTORE_FILES.length > 0) {
+          updateItwRestore()
+          startItwRestoreAutoPlay()
+        }
+        if (itwRefocusInterval) clearInterval(itwRefocusInterval)
+      })
+
+      btnItwTabRefocus.addEventListener('click', () => {
+        btnItwTabRefocus.classList.add('active')
+        btnItwTabRestore.classList.remove('active')
+        panelItwRestore.style.display = 'none'
+        panelItwRefocus.style.display = 'block'
+
+        if (ITW_REFOCUS_FILES.length > 0) {
+          updateItwRefocus()
+          startItwRefocusAutoPlay()
+        }
+        if (itwRestoreInterval) clearInterval(itwRestoreInterval)
+      })
+
+      // --- Initialization ---
+      if (ITW_RESTORE_FILES.length > 0) {
+        updateItwRestore()
+        startItwRestoreAutoPlay()
+      }
+    </script>
+  </body>
+</html>
