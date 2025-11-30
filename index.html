@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Generative Refocusing: Flexible Defocus Control from a Single Image</title>
+    <link rel="icon" type="image/png" href="static/icon.png" />
     <style>
       body {
         margin: 0;
@@ -19,6 +20,14 @@
         font-size: 36px;
         margin-bottom: 8px;
         text-align: center;
+      }
+      /* 新增這個 class 用來控制標題圖示 */
+      .title-icon {
+        height: 1.2em;       /* 設定高度稍微比文字大一點點，或設固定如 40px */
+        width: auto;         /* 保持比例 */
+        vertical-align: middle; /* 讓圖片跟文字垂直置中 */
+        margin-right: 12px;  /* 圖片跟文字的間距 */
+        margin-bottom: 6px;  /* 微調垂直位置，視圖片重心而定 */
       }
 
       .meta {
@@ -485,7 +494,10 @@
     </style>
   </head>
   <body>
-    <h1>Generative Refocusing: Flexible Defocus Control from a Single Image</h1>
+    <h1>
+      <img src="static/icon.png" alt="icon" class="title-icon">
+      Generative Refocusing: Flexible Defocus Control from a Single Image
+    </h1>
     <div class="meta">
       <div>Supplementary Material</div>
       <div>Anonymous authors</div>
