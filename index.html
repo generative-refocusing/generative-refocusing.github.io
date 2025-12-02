@@ -2,69 +2,130 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Generative Refocusing: Flexible Defocus Control from a Single Image</title>
     <link rel="icon" type="image/png" href="static/icon.png" />
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+
     <style>
+      /* ====== Global Styles ====== */
       body {
         margin: 0;
-        padding: 24px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #f5f5f5;
+        padding: 0;
+        font-family: 'Google Sans', sans-serif;
+        background: #fff;
         color: #222;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        line-height: 1.5;
       }
 
-      h1 {
-        font-size: 36px;
-        margin-bottom: 8px;
-        text-align: center;
+      h1,
+      h2,
+      h3 {
+        font-family: 'Google Sans', sans-serif;
+        font-weight: 600;
+        margin: 0 0 16px 0;
+        color: #222;
       }
-      /* 新增這個 class 用來控制標題圖示 */
+
+      /* ====== Layout Classes (Bulma-inspired) ====== */
+      .section {
+        padding: 3rem 1.5rem; /* 上下留白 */
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .section.is-white {
+        background-color: #ffffff;
+      }
+
+      .section.is-light {
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        max-width: 1000px; /* 限制內容最大寬度 */
+        margin: 0 auto;
+        position: relative;
+      }
+
+      /* ====== Title & Header Area ====== */
+      .hero-body {
+        text-align: center;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+      }
+
+      h1.publication-title {
+        font-size: 3rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+      }
+
       .title-icon {
-        height: 1.2em;       /* 設定高度稍微比文字大一點點，或設固定如 40px */
-        width: auto;         /* 保持比例 */
-        vertical-align: middle; /* 讓圖片跟文字垂直置中 */
-        margin-right: 12px;  /* 圖片跟文字的間距 */
-        margin-bottom: 6px;  /* 微調垂直位置，視圖片重心而定 */
+        height: 1.4em;
+        width: auto;
+        vertical-align: bottom;
+        margin-right: 10px;
       }
 
       .meta {
-        text-align: center;
-        margin-bottom: 40px;
-        line-height: 1.4;
+        font-size: 1.25rem;
+        color: #4a4a4a;
+        margin-bottom: 1rem;
       }
 
       .section-title {
-        font-size: 32px;
-        font-weight: 600;
-        color: #222;
-        margin-bottom: 16px;
+        font-size: 2rem;
         text-align: center;
-        margin-top: 60px;
-      }
-      /* First section title needs less margin */
-      .first-title {
-        margin-top: 0;
+        margin-bottom: 2rem;
       }
 
-      /* ====== Wild Section Styles (Restoration & Refocus) ====== */
-      .wild-section {
-        width: 100%;
-        max-width: 1200px;
-        margin-bottom: 20px;
+      /* ====== Task Toolbars & Buttons ====== */
+      .task-toolbar {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .task-btn {
+        padding: 8px 20px;
+        border-radius: 999px;
+        border: 1px solid #dbdbdb;
         background: #fff;
-        padding: 24px;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        color: #363636;
+        transition: all 0.2s ease;
+        font-family: 'Google Sans', sans-serif;
+      }
+
+      .task-btn:hover {
+        border-color: #b5b5b5;
+        background: #f9f9f9;
+      }
+      .task-btn.active {
+        background: #363636;
+        color: #fff;
+        border-color: #363636;
+      }
+
+      /* ====== Wild Section (Image Display) ====== */
+      .wild-display-area {
+        display: none; /* Controlled by JS */
+        width: 100%;
+      }
+      .wild-display-area.active {
+        display: block;
       }
 
       .wild-container {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 20px;
       }
 
       .wild-side-by-side {
@@ -85,86 +146,43 @@
         width: 100%;
         height: auto;
         border-radius: 8px;
-        border: 1px solid #eee;
-        background: #000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for images */
       }
 
       .wild-label {
-        margin-top: 8px;
+        margin-top: 10px;
         font-size: 14px;
         font-weight: 600;
-        color: #555;
+        color: #666;
       }
 
       .nav-arrow {
         background: none;
         border: none;
-        font-size: 40px;
-        color: #ccc;
+        font-size: 32px;
+        color: #b5b5b5;
         cursor: pointer;
-        padding: 10px;
-        transition: color 0.2s, transform 0.1s;
-        user-select: none;
+        padding: 0 10px;
+        transition: color 0.2s;
         outline: none;
-        flex-shrink: 0;
       }
 
       .nav-arrow:hover {
-        color: #333;
-      }
-      .nav-arrow:active {
-        transform: scale(0.95);
+        color: #363636;
       }
 
       .wild-counter {
         text-align: center;
-        margin-top: 12px;
+        margin-top: 16px;
         font-size: 14px;
-        color: #666;
+        color: #888;
         font-variant-numeric: tabular-nums;
       }
 
-      /* ====== Visual Comparison & General Buttons ====== */
-      .task-section {
-        max-width: 1000px;
-        width: 100%;
-        margin-bottom: 40px;
-      }
-
-      .task-toolbar {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin-bottom: 20px;
-      }
-
-      .task-btn {
-        padding: 6px 14px;
-        border-radius: 999px;
-        border: 1px solid #ddd;
-        background: #fff;
-        font-size: 13px;
-        cursor: pointer;
-        color: #555;
-        transition: all 0.2s ease;
-      }
-
-      .task-btn:hover {
-        border-color: #999;
-        color: #000;
-      }
-      .task-btn.active {
-        background: #222;
-        color: #fff;
-        border-color: #222;
-      }
-
+      /* ====== Comparison Sliders Section ====== */
       .task-panel {
         display: none;
-        background: #fff;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        width: 100%;
       }
       .task-panel.active {
         display: block;
@@ -174,14 +192,14 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         align-items: center;
       }
 
       .comp-row {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
         justify-content: center;
       }
@@ -195,35 +213,34 @@
 
       .comp-btn {
         padding: 4px 12px;
-        border-radius: 6px;
-        border: 1px solid #eee;
-        background: #f9f9f9;
+        border-radius: 4px;
+        border: 1px solid #dbdbdb;
+        background: #fff;
         font-size: 13px;
         cursor: pointer;
-        color: #555;
+        color: #363636;
+        font-family: 'Google Sans', sans-serif;
       }
       .comp-btn:hover {
-        background: #eee;
+        background: #f5f5f5;
       }
       .comp-btn.active {
-        background: #444;
+        background: #4a4a4a;
         color: #fff;
-        border-color: #444;
+        border-color: #4a4a4a;
       }
 
-      /* ====== Reusable Slider Styles ====== */
+      /* Generic Slider CSS */
       .slider-container {
         position: relative;
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        background: #000;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         cursor: ew-resize;
         user-select: none;
-        -webkit-user-select: none;
       }
 
       .slider-layout-img {
@@ -249,7 +266,6 @@
         height: 100%;
         object-fit: cover;
         pointer-events: none;
-        user-select: none;
       }
 
       .slider-handle {
@@ -257,21 +273,12 @@
         top: 0;
         left: 50%;
         bottom: 0;
-        width: 4px;
+        width: 2px;
         transform: translateX(-50%);
         pointer-events: none;
         z-index: 10;
-      }
-
-      .slider-handle-line {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        width: 2px;
-        transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        background: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
       }
 
       .slider-handle-knob {
@@ -279,54 +286,43 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         background: #fff;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+        font-size: 12px;
         color: #444;
       }
 
       .slider-label {
         position: absolute;
-        bottom: 16px;
-        padding: 4px 10px;
+        bottom: 12px;
+        padding: 4px 8px;
         border-radius: 4px;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.7);
         color: #fff;
         font-size: 12px;
         font-weight: 500;
         pointer-events: none;
         z-index: 5;
-        backdrop-filter: blur(2px);
       }
       .slider-label.left {
-        left: 16px;
+        left: 12px;
       }
       .slider-label.right {
-        right: 16px;
-      }
-
-      .placeholder-text {
-        font-size: 13px;
-        color: #666;
-        text-align: center;
-        padding: 40px 0;
+        right: 12px;
       }
 
       /* ====== Interactive Viewer ====== */
-      .viewer {
+      .interactive-wrapper {
         background: #fff;
-        border-radius: 16px;
+        border-radius: 12px;
         padding: 24px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-        max-width: 1100px;
-        width: 100%;
-        margin-bottom: 40px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Keep card look only for complex interactive element */
       }
 
       .interactive-row {
@@ -346,7 +342,7 @@
       .image-container {
         position: relative;
         width: 100%;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
         background: #000;
       }
@@ -377,7 +373,7 @@
 
       .instructions {
         text-align: center;
-        margin-top: 12px;
+        margin-top: 10px;
         font-size: 14px;
         color: #555;
       }
@@ -391,50 +387,32 @@
         margin-top: 24px;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
         padding: 0 8px;
         justify-content: center;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
       }
 
       #kSlider {
         flex: 1;
-        max-width: 540px;
+        max-width: 500px;
       }
-
       .aperture-icon {
-        width: 32px;
-        height: 32px;
-        object-fit: contain;
-        flex-shrink: 0;
+        height: 28px;
+        width: auto;
+        opacity: 0.7;
       }
 
-      .hidden-canvas {
-        display: none;
-      }
-
-      /* ====== Ablation Section ====== */
-      .ablation-section {
-        max-width: 600px;
-        width: 100%;
-        margin: 0 auto 40px;
-      }
-      .ablation-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #222;
-        margin-bottom: 12px;
+      /* ====== Ablation & Failure ====== */
+      .description-text {
         text-align: center;
+        margin-bottom: 24px;
+        font-size: 16px;
+        color: #4a4a4a;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
-      /* ====== Failure Case Section ====== */
-      .failure-section {
-        max-width: 1000px;
-        width: 100%;
-        margin: 0 auto 60px;
-      }
       .failure-row {
         display: flex;
         flex-wrap: wrap;
@@ -442,392 +420,354 @@
         justify-content: center;
         align-items: flex-start;
       }
+
       .static-box {
         flex: 1;
         max-width: 480px;
         min-width: 300px;
         position: relative;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        background: #000;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       }
       .static-box img {
         display: block;
         width: 100%;
         height: auto;
       }
+
       .failure-slider-box {
         flex: 1;
         max-width: 480px;
         min-width: 300px;
-        width: 100%;
       }
 
-      .warning-banner {
-        background: #ffeaea;
-        color: #b00020;
-        padding: 8px 16px;
-        border-radius: 10px;
-        margin-bottom: 16px;
-        font-size: 13px;
-        max-width: 900px;
-      }
-      .warning-banner code {
-        background: rgba(0, 0, 0, 0.04);
-        padding: 2px 4px;
-        border-radius: 4px;
-        font-family: monospace;
-      }
-      /* 描述文字樣式 (共用於 Ablation 和 Failure) */
-      .ablation-description,
-      .failure-description {
-        text-align: center;
-        margin-bottom: 16px;
-        font-size: 14px;
-        color: #555;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.5;
+      /* Hidden Canvas */
+      .hidden-canvas {
+        display: none;
       }
     </style>
   </head>
   <body>
-    <h1>
-      <img src="static/icon.png" alt="icon" class="title-icon">
-      Generative Refocusing: Flexible Defocus Control from a Single Image
-    </h1>
-    <div class="meta">
-      <div>Supplementary Material</div>
-      <div>Anonymous authors</div>
-      <div>Submission ID: 6928</div>
-    </div>
-
-    <div class="task-section" style="margin-top: 0; max-width: 1200px">
-      <div class="section-title first-title">Historical Images</div>
-
-      <div class="task-toolbar">
-        <button class="task-btn active" id="btn-wild-restore">All-in-focus estimation</button>
-        <button class="task-btn" id="btn-wild-refocus">Refocusing</button>
-      </div>
-
-      <div id="panel-wild-restore" class="wild-section" style="display: block">
-        <div class="wild-container">
-          <button class="nav-arrow" id="wildPrev">&#10094;</button>
-
-          <div class="wild-side-by-side">
-            <div class="wild-img-box">
-              <img src="" alt="Input" id="wildInputImg" />
-              <div class="wild-label">Input</div>
-            </div>
-
-            <div class="wild-img-box">
-              <img src="" alt="Ours" id="wildOutputImg" />
-              <div class="wild-label">Ours</div>
-            </div>
-          </div>
-
-          <button class="nav-arrow" id="wildNext">&#10095;</button>
-        </div>
-        <div class="wild-counter" id="wildCounter">Case 1 / 1</div>
-      </div>
-
-      <div id="panel-wild-refocus" class="wild-section" style="display: none">
-        <div class="wild-container">
-          <button class="nav-arrow" id="wildRefocusPrev">&#10094;</button>
-
-          <div class="wild-side-by-side">
-            <div class="wild-img-box">
-              <img src="" alt="Input" id="wildRefocusInputImg" />
-              <div class="wild-label">Input</div>
-            </div>
-
-            <div class="wild-img-box">
-              <img src="" alt="Ours" id="wildRefocusOutputImg" />
-              <div class="wild-label">Ours</div>
-            </div>
-          </div>
-
-          <button class="nav-arrow" id="wildRefocusNext">&#10095;</button>
-        </div>
-        <div class="wild-counter" id="wildRefocusCounter">Case 1 / 1</div>
+    <div class="container hero-body">
+      <h1 class="publication-title">
+        <span style="font-weight: 800; display: inline-block">
+          <img src="static/icon.png" alt="icon" class="title-icon" />
+          Generative Refocusing
+        </span>
+        <br />
+        <span style="font-weight: 400; font-size: 0.8em; display: inline-block; margin-top: 8px; color: #4a4a4a;">
+          Flexible Defocus Control from a Single Image
+        </span>
+      </h1>
+      
+      <div class="meta">
+        <span class="author-block">Supplementary Material</span><br />
+        <span class="author-block">Anonymous authors</span><br />
+        <span class="author-block">Submission ID: 6928</span>
       </div>
     </div>
+    </section>
 
-    <div class="task-section" style="margin-top: 40px; max-width: 1200px">
-      <div class="section-title">In-the-wild Images</div>
+    <section class="section is-light">
+      <div class="container">
+        <h2 class="section-title">Historical Images</h2>
 
-      <div class="task-toolbar">
-        <button class="task-btn active" id="btn-itw-restore">All-in-focus estimation</button>
-        <button class="task-btn" id="btn-itw-refocus">Refocusing</button>
-      </div>
-
-      <div id="panel-itw-restore" class="wild-section" style="display: block">
-        <div class="wild-container">
-          <button class="nav-arrow" id="itwPrev">&#10094;</button>
-
-          <div class="wild-side-by-side">
-            <div class="wild-img-box">
-              <img src="" alt="Input" id="itwInputImg" />
-              <div class="wild-label">Input</div>
-            </div>
-
-            <div class="wild-img-box">
-              <img src="" alt="Ours" id="itwOutputImg" />
-              <div class="wild-label">Ours</div>
-            </div>
-          </div>
-
-          <button class="nav-arrow" id="itwNext">&#10095;</button>
-        </div>
-        <div class="wild-counter" id="itwCounter">Case 0 / 0</div>
-      </div>
-
-      <div id="panel-itw-refocus" class="wild-section" style="display: none">
-        <div class="wild-container">
-          <button class="nav-arrow" id="itwRefocusPrev">&#10094;</button>
-
-          <div class="wild-side-by-side">
-            <div class="wild-img-box">
-              <img src="" alt="Input" id="itwRefocusInputImg" />
-              <div class="wild-label">Input</div>
-            </div>
-
-            <div class="wild-img-box">
-              <img src="" alt="Ours" id="itwRefocusOutputImg" />
-              <div class="wild-label">Ours</div>
-            </div>
-          </div>
-
-          <button class="nav-arrow" id="itwRefocusNext">&#10095;</button>
-        </div>
-        <div class="wild-counter" id="itwRefocusCounter">Case 1 / 6</div>
-      </div>
-    </div>
-
-    <div class="section-title">Interactive Refocusing</div>
-    <div class="viewer">
-      <div class="interactive-row">
-        <div class="interactive-col">
-          <div class="image-container">
-            <img class="static-input-img" src="static/case_1/original_input.png" alt="Input Image" />
-          </div>
-          <div class="instructions">Input Image</div>
+        <div class="task-toolbar">
+          <button class="task-btn active" id="btn-wild-restore">All-in-focus estimation</button>
+          <button class="task-btn" id="btn-wild-refocus">Refocusing</button>
         </div>
 
-        <div class="interactive-col">
-          <div class="image-container">
-            <img
-              id="mainImage"
-              src="static/case_1/input/1/infocus_2_half_2_crop512__1_K15.0.png"
-              alt="Generative refocusing demo"
-            />
-            <div class="pointer-overlay" id="pointerOverlay">
-              <svg viewBox="0 0 64 64">
-                <circle cx="20" cy="20" r="10" fill="none" stroke="#000" stroke-width="3" opacity="0.4"></circle>
-                <path
-                  d="M24 34 L24 16
-                           C24 13 26 11 29 11
-                           C32 11 34 13 34 16
-                           L34 32
-                           L36 26
-                           C37 24 39 23 41 24
-                           C43 25 44 27 44 29
-                           L44 37
-                           L46 34
-                           C47 32 49 31 51 32
-                           C53 33 54 35 54 37
-                           L54 45
-                           C54 52 49 57 42 57
-                           L32 57
-                           C28 57 25 55 23 52
-                           L18 44
-                           C17 43 16 41 16 39
-                           C16 36 18 34 21 34
-                           Z"
-                  fill="#ffffff"
-                  stroke="#000000"
-                  stroke-width="2"
-                ></path>
-              </svg>
+        <div id="panel-wild-restore" class="wild-display-area active">
+          <div class="wild-container">
+            <button class="nav-arrow" id="wildPrev">&#10094;</button>
+            <div class="wild-side-by-side">
+              <div class="wild-img-box">
+                <img src="" alt="Input" id="wildInputImg" />
+                <div class="wild-label">Input</div>
+              </div>
+              <div class="wild-img-box">
+                <img src="" alt="Ours" id="wildOutputImg" />
+                <div class="wild-label">Ours</div>
+              </div>
+            </div>
+            <button class="nav-arrow" id="wildNext">&#10095;</button>
+          </div>
+          <div class="wild-counter" id="wildCounter">Case 1 / 1</div>
+        </div>
+
+        <div id="panel-wild-refocus" class="wild-display-area">
+          <div class="wild-container">
+            <button class="nav-arrow" id="wildRefocusPrev">&#10094;</button>
+            <div class="wild-side-by-side">
+              <div class="wild-img-box">
+                <img src="" alt="Input" id="wildRefocusInputImg" />
+                <div class="wild-label">Input</div>
+              </div>
+              <div class="wild-img-box">
+                <img src="" alt="Ours" id="wildRefocusOutputImg" />
+                <div class="wild-label">Ours</div>
+              </div>
+            </div>
+            <button class="nav-arrow" id="wildRefocusNext">&#10095;</button>
+          </div>
+          <div class="wild-counter" id="wildRefocusCounter">Case 1 / 1</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section is-white">
+      <div class="container">
+        <h2 class="section-title">In-the-wild Images</h2>
+
+        <div class="task-toolbar">
+          <button class="task-btn active" id="btn-itw-restore">All-in-focus estimation</button>
+          <button class="task-btn" id="btn-itw-refocus">Refocusing</button>
+        </div>
+
+        <div id="panel-itw-restore" class="wild-display-area active">
+          <div class="wild-container">
+            <button class="nav-arrow" id="itwPrev">&#10094;</button>
+            <div class="wild-side-by-side">
+              <div class="wild-img-box">
+                <img src="" alt="Input" id="itwInputImg" />
+                <div class="wild-label">Input</div>
+              </div>
+              <div class="wild-img-box">
+                <img src="" alt="Ours" id="itwOutputImg" />
+                <div class="wild-label">Ours</div>
+              </div>
+            </div>
+            <button class="nav-arrow" id="itwNext">&#10095;</button>
+          </div>
+          <div class="wild-counter" id="itwCounter">Case 0 / 0</div>
+        </div>
+
+        <div id="panel-itw-refocus" class="wild-display-area">
+          <div class="wild-container">
+            <button class="nav-arrow" id="itwRefocusPrev">&#10094;</button>
+            <div class="wild-side-by-side">
+              <div class="wild-img-box">
+                <img src="" alt="Input" id="itwRefocusInputImg" />
+                <div class="wild-label">Input</div>
+              </div>
+              <div class="wild-img-box">
+                <img src="" alt="Ours" id="itwRefocusOutputImg" />
+                <div class="wild-label">Ours</div>
+              </div>
+            </div>
+            <button class="nav-arrow" id="itwRefocusNext">&#10095;</button>
+          </div>
+          <div class="wild-counter" id="itwRefocusCounter">Case 1 / 6</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section is-light">
+      <div class="container">
+        <h2 class="section-title">Interactive Refocusing</h2>
+
+        <div class="interactive-wrapper">
+          <div class="interactive-row">
+            <div class="interactive-col">
+              <div class="image-container">
+                <img class="static-input-img" src="static/case_1/original_input.png" alt="Input Image" />
+              </div>
+              <div class="instructions">Input Image</div>
+            </div>
+
+            <div class="interactive-col">
+              <div class="image-container">
+                <img
+                  id="mainImage"
+                  src="static/case_1/input/1/infocus_2_half_2_crop512__1_K15.0.png"
+                  alt="Generative refocusing demo"
+                />
+                <div class="pointer-overlay" id="pointerOverlay">
+                  <svg viewBox="0 0 64 64">
+                    <circle cx="20" cy="20" r="10" fill="none" stroke="#000" stroke-width="3" opacity="0.4"></circle>
+                    <path
+                      d="M24 34 L24 16 C24 13 26 11 29 11 C32 11 34 13 34 16 L34 32 L36 26 C37 24 39 23 41 24 C43 25 44 27 44 29 L44 37 L46 34 C47 32 49 31 51 32 C53 33 54 35 54 37 L54 45 C54 52 49 57 42 57 L32 57 C28 57 25 55 23 52 L18 44 C17 43 16 41 16 39 C16 36 18 34 21 34 Z"
+                      fill="#ffffff"
+                      stroke="#000000"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="instructions">
+                <div><em>Click</em> on a subject to refocus</div>
+              </div>
             </div>
           </div>
-          <div class="instructions">
-            <div><em>Click</em> on a subject to refocus</div>
+
+          <div class="controls">
+            <img src="static/aperture_icon/small.png" alt="Small" class="aperture-icon" />
+            <input type="range" id="kSlider" min="0" max="10" step="1" value="8" />
+            <img src="static/aperture_icon/large.png" alt="Large" class="aperture-icon" />
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="controls">
-        <img src="static/aperture_icon/small.png" alt="Small" class="aperture-icon" />
-        <input type="range" id="kSlider" min="0" max="10" step="1" value="8" />
-        <img src="static/aperture_icon/large.png" alt="Large" class="aperture-icon" />
+    <section class="section is-white">
+      <div class="container">
+        <h2 class="section-title">Visual Comparison</h2>
+
+        <div class="task-toolbar">
+          <button class="task-btn active" data-task="defocus">Defocus deblur</button>
+          <button class="task-btn" data-task="bokeh">Bokeh synthesis</button>
+          <button class="task-btn" data-task="refocus">Refocusing</button>
+        </div>
+
+        <div id="task-defocus" class="task-panel active">
+          <div class="comp-controls">
+            <div class="comp-row" id="caseButtons">
+              <span class="comp-label">Case:</span>
+            </div>
+            <div class="comp-row" id="methodButtons">
+              <span class="comp-label">Method:</span>
+            </div>
+          </div>
+          <div class="slider-container" id="comparisonSlider">
+            <img src="" alt="" class="slider-layout-img" id="compLayoutImg" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Method" id="compLeftImg" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="compRightImg" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left" id="compLabelLeft">Method</div>
+            <div class="slider-label right">Ours</div>
+          </div>
+        </div>
+
+        <div id="task-bokeh" class="task-panel">
+          <div class="comp-controls">
+            <div class="comp-row" id="bokehCaseButtons">
+              <span class="comp-label">Case:</span>
+            </div>
+            <div class="comp-row" id="bokehMethodButtons">
+              <span class="comp-label">Method:</span>
+            </div>
+          </div>
+          <div class="slider-container" id="bokehSlider">
+            <img src="" alt="" class="slider-layout-img" id="bokehLayoutImg" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Method" id="bokehLeftImg" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="bokehRightImg" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left" id="bokehLabelLeft">Method</div>
+            <div class="slider-label right">Ours</div>
+          </div>
+        </div>
+
+        <div id="task-refocus" class="task-panel">
+          <div class="comp-controls">
+            <div class="comp-row" id="refocusCaseButtons">
+              <span class="comp-label">Case:</span>
+            </div>
+            <div class="comp-row" id="refocusMethodButtons">
+              <span class="comp-label">Method:</span>
+            </div>
+          </div>
+          <div class="slider-container" id="refocusSlider">
+            <img src="" alt="" class="slider-layout-img" id="refocusLayoutImg" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Method" id="refocusLeftImg" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="refocusRightImg" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left" id="refocusLabelLeft">Method</div>
+            <div class="slider-label right">Ours</div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="task-section">
-      <div class="section-title">Visual Comparison</div>
-      <div class="task-toolbar">
-        <button class="task-btn active" data-task="defocus">Defocus deblur</button>
-        <button class="task-btn" data-task="bokeh">Bokeh synthesis</button>
-        <button class="task-btn" data-task="refocus">Refocusing</button>
-      </div>
+    <section class="section is-light">
+      <div class="container">
+        <h2 class="section-title">Visual Comparison for BokehNet Training Ablation</h2>
+        <div class="description-text">
+          Training solely on synthetic data tends to result in an incorrect depth scale, leading to excessive bokeh
+          strength and noticeable artifacts along object boundaries.
+        </div>
 
-      <div id="task-defocus" class="task-panel active">
         <div class="comp-controls">
-          <div class="comp-row" id="caseButtons">
+          <div class="comp-row" id="ablationButtons">
             <span class="comp-label">Case:</span>
           </div>
-          <div class="comp-row" id="methodButtons">
-            <span class="comp-label">Method:</span>
-          </div>
         </div>
 
-        <div class="slider-container" id="comparisonSlider">
-          <img src="" alt="" class="slider-layout-img" id="compLayoutImg" />
+        <div class="slider-container" id="ablationSlider">
+          <img
+            src="static/ablation_w_or_wo_real_pair/synthetic/0.png"
+            class="slider-layout-img"
+            id="ablationLayoutImg"
+            alt=""
+          />
           <div class="slider-pane pane-left">
-            <img src="" alt="Method" id="compLeftImg" />
+            <img src="static/ablation_w_or_wo_real_pair/synthetic/0.png" id="ablationLeftImg" alt="Synthetic pair" />
           </div>
           <div class="slider-pane pane-right">
-            <img src="" alt="Ours" id="compRightImg" />
+            <img src="static/ablation_w_or_wo_real_pair/real_pair/0.png" id="ablationRightImg" alt="With real pairs" />
           </div>
           <div class="slider-handle">
-            <div class="slider-handle-line"></div>
             <div class="slider-handle-knob">&#9664;&#9654;</div>
           </div>
-          <div class="slider-label left" id="compLabelLeft">Method</div>
-          <div class="slider-label right">Ours</div>
+          <div class="slider-label left">Synthetic pair</div>
+          <div class="slider-label right">+ Real unpair</div>
         </div>
       </div>
+    </section>
 
-      <div id="task-bokeh" class="task-panel">
+    <section class="section is-white" style="padding-bottom: 60px">
+      <div class="container">
+        <h2 class="section-title">Failure Cases</h2>
+        <div class="description-text">
+          For severely blurred inputs, the model may hallucinate incorrect details (e.g., reconstructing "Jewelry shop"
+          as "Temnlry shop").
+        </div>
+
         <div class="comp-controls">
-          <div class="comp-row" id="bokehCaseButtons">
-            <span class="comp-label">Case:</span>
-          </div>
-          <div class="comp-row" id="bokehMethodButtons">
-            <span class="comp-label">Method:</span>
-          </div>
+          <div class="comp-row" id="failureButtons"></div>
         </div>
-        <div class="slider-container" id="bokehSlider">
-          <img src="" alt="" class="slider-layout-img" id="bokehLayoutImg" />
-          <div class="slider-pane pane-left">
-            <img src="" alt="Method" id="bokehLeftImg" />
-          </div>
-          <div class="slider-pane pane-right">
-            <img src="" alt="Ours" id="bokehRightImg" />
-          </div>
-          <div class="slider-handle">
-            <div class="slider-handle-line"></div>
-            <div class="slider-handle-knob">&#9664;&#9654;</div>
-          </div>
-          <div class="slider-label left" id="bokehLabelLeft">Method</div>
-          <div class="slider-label right">Ours</div>
-        </div>
-      </div>
 
-      <div id="task-refocus" class="task-panel">
-        <div class="comp-controls">
-          <div class="comp-row" id="refocusCaseButtons">
-            <span class="comp-label">Case:</span>
+        <div class="failure-row">
+          <div class="static-box">
+            <img id="failureInputImg" src="" alt="Input Image" />
+            <div class="slider-label left" style="left: 50%; transform: translateX(-50%)">Input image</div>
           </div>
-          <div class="comp-row" id="refocusMethodButtons">
-            <span class="comp-label">Method:</span>
+
+          <div class="slider-container failure-slider-box" id="failureSlider">
+            <img src="" alt="" class="slider-layout-img" id="failureLayoutImg" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="GT" id="failureLeftImg" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="failureRightImg" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left">GT</div>
+            <div class="slider-label right">Ours</div>
           </div>
-        </div>
-        <div class="slider-container" id="refocusSlider">
-          <img src="" alt="" class="slider-layout-img" id="refocusLayoutImg" />
-          <div class="slider-pane pane-left">
-            <img src="" alt="Method" id="refocusLeftImg" />
-          </div>
-          <div class="slider-pane pane-right">
-            <img src="" alt="Ours" id="refocusRightImg" />
-          </div>
-          <div class="slider-handle">
-            <div class="slider-handle-line"></div>
-            <div class="slider-handle-knob">&#9664;&#9654;</div>
-          </div>
-          <div class="slider-label left" id="refocusLabelLeft">Method</div>
-          <div class="slider-label right">Ours</div>
         </div>
       </div>
-    </div>
-
-    <div class="ablation-section">
-      <div class="ablation-title">Visual Comparison for BokehNet Training Ablation</div>
-
-      <div class="ablation-description">
-        Training solely on synthetic data tends to result in an incorrect depth scale, leading to excessive bokeh
-        strength and noticeable artifacts along object boundaries.
-      </div>
-
-      <div class="comp-controls">
-        <div class="comp-row" id="ablationButtons">
-          <span class="comp-label">Case:</span>
-        </div>
-      </div>
-
-      <div class="slider-container" id="ablationSlider">
-        <img
-          src="static/ablation_w_or_wo_real_pair/synthetic/0.png"
-          class="slider-layout-img"
-          id="ablationLayoutImg"
-          alt=""
-        />
-
-        <div class="slider-pane pane-left">
-          <img src="static/ablation_w_or_wo_real_pair/synthetic/0.png" id="ablationLeftImg" alt="Synthetic pair" />
-        </div>
-
-        <div class="slider-pane pane-right">
-          <img src="static/ablation_w_or_wo_real_pair/real_pair/0.png" id="ablationRightImg" alt="With real pairs" />
-        </div>
-
-        <div class="slider-handle">
-          <div class="slider-handle-line"></div>
-          <div class="slider-handle-knob">&#9664;&#9654;</div>
-        </div>
-        <div class="slider-label left">Synthetic pair</div>
-        <div class="slider-label right">+ Real unpair</div>
-      </div>
-    </div>
-
-    <div class="failure-section">
-      <div class="section-title">Failure Cases</div>
-
-      <div class="failure-description">
-        For severely blurred inputs, the model may hallucinate incorrect details (e.g., reconstructing "Jewelry shop" as
-        "Temnlry shop").
-      </div>
-
-      <div class="comp-controls">
-        <div class="comp-row" id="failureButtons"></div>
-      </div>
-
-      <div class="failure-row">
-        <div class="static-box">
-          <img id="failureInputImg" src="" alt="Input Image" />
-          <div class="slider-label left" style="left: 50%; transform: translateX(-50%)">Input image</div>
-        </div>
-
-        <div class="slider-container failure-slider-box" id="failureSlider">
-          <img src="" alt="" class="slider-layout-img" id="failureLayoutImg" />
-          <div class="slider-pane pane-left">
-            <img src="" alt="GT" id="failureLeftImg" />
-          </div>
-          <div class="slider-pane pane-right">
-            <img src="" alt="Ours" id="failureRightImg" />
-          </div>
-          <div class="slider-handle">
-            <div class="slider-handle-line"></div>
-            <div class="slider-handle-knob">&#9664;&#9654;</div>
-          </div>
-          <div class="slider-label left">GT</div>
-          <div class="slider-label right">Ours</div>
-        </div>
-      </div>
-    </div>
+    </section>
 
     <canvas id="maskCanvas_-1" class="hidden-canvas"></canvas>
     <canvas id="maskCanvas_1" class="hidden-canvas"></canvas>
@@ -850,7 +790,6 @@
         function applyRatio(ratio) {
           ratio = Math.max(0, Math.min(1, ratio))
           const percentage = ratio * 100
-
           leftPane.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`
           rightPane.style.clipPath = `inset(0 0 0 ${percentage}%)`
           handle.style.left = `${percentage}%`
@@ -869,12 +808,10 @@
           applyRatio(getRatioFromEvent(e))
           e.preventDefault()
         }
-
         function onPointerMove(e) {
           if (!isDragging) return
           applyRatio(getRatioFromEvent(e))
         }
-
         function onPointerUp() {
           isDragging = false
         }
@@ -890,27 +827,24 @@
       }
 
       document.addEventListener('DOMContentLoaded', function () {
-        if (location.protocol === 'file:') {
-          const banner = document.createElement('div')
-        }
-
-        // ==========================================
-        // 1. Historical Image Restoration (Existing)
-        // ==========================================
+        // ... (Logics retained)
+        // 1. Historical Logic
         const WILD_FILES = [
           'apollo11_shake_hand.jpg',
           'Dianna.jpg',
+          'Colored (6).jpg',
+          'Colored (1).jpg',
+          'comandante-ernesto-che-guevara.jpg',
           'kid.png',
+          'albert-einstein-and-charlie-chaplin.jpg',
           'wweii_nurse.jpg',
           'family.jpg',
           'Dianna_2.jpg',
           'queen_black.jpg',
         ]
-
         let currentWildIndex = 0
         let autoPlayInterval = null
         const AUTO_PLAY_DELAY = 10000
-
         const wildInputImg = document.getElementById('wildInputImg')
         const wildOutputImg = document.getElementById('wildOutputImg')
         const wildCounter = document.getElementById('wildCounter')
@@ -924,42 +858,45 @@
           wildOutputImg.src = `static/Historical/AIF/output/${filename}`
           wildCounter.textContent = `Case ${currentWildIndex + 1} / ${WILD_FILES.length}`
         }
-
         function nextWild() {
           currentWildIndex = (currentWildIndex + 1) % WILD_FILES.length
           updateWild()
         }
-
         function prevWild() {
           currentWildIndex = (currentWildIndex - 1 + WILD_FILES.length) % WILD_FILES.length
           updateWild()
         }
-
         function startAutoPlay() {
           if (autoPlayInterval) clearInterval(autoPlayInterval)
           autoPlayInterval = setInterval(nextWild, AUTO_PLAY_DELAY)
         }
 
-        btnPrev.addEventListener('click', () => {
-          prevWild()
-          startAutoPlay()
-        })
-        btnNext.addEventListener('click', () => {
-          nextWild()
-          startAutoPlay()
-        })
-
+        if (btnPrev) {
+          btnPrev.addEventListener('click', () => {
+            prevWild()
+            // startAutoPlay()
+          })
+          btnNext.addEventListener('click', () => {
+            nextWild()
+            // startAutoPlay()
+          })
+        }
         if (WILD_FILES.length > 0) {
           updateWild()
-          startAutoPlay()
+          // startAutoPlay()
         }
 
-        // ==========================================
-        // 2. Historical Image Refocus (NEW)
-        // ==========================================
-
-        const REFOCUS_WILD_FILES = ['fashion_1980.jpg', 'beach.png']
-
+        // 2. Refocus Wild
+        const REFOCUS_WILD_FILES = [
+          'black_white_kiss.png',
+          'fashion_1980.jpg',
+          'kid.png',
+          'beach.png',
+          'C0tvR1ZWIAER4dB_image.png',
+          'Che-sensibilidad1.png',
+          'edison.png',
+          '25807218721_bf0f777e36_b.png',
+        ]
         let currentRefocusWildIndex = 0
         const wildRefocusInputImg = document.getElementById('wildRefocusInputImg')
         const wildRefocusOutputImg = document.getElementById('wildRefocusOutputImg')
@@ -970,34 +907,24 @@
         function updateRefocusWild() {
           if (REFOCUS_WILD_FILES.length === 0) return
           const filename = REFOCUS_WILD_FILES[currentRefocusWildIndex]
-
           wildRefocusInputImg.src = `static/Historical/Refocus/input/${filename}`
           wildRefocusOutputImg.src = `static/Historical/Refocus/output/${filename}`
-
           wildRefocusCounter.textContent = `Case ${currentRefocusWildIndex + 1} / ${REFOCUS_WILD_FILES.length}`
         }
-
-        function nextRefocusWild() {
-          currentRefocusWildIndex = (currentRefocusWildIndex + 1) % REFOCUS_WILD_FILES.length
-          updateRefocusWild()
+        if (btnRefocusPrev) {
+          btnRefocusPrev.addEventListener('click', () => {
+            currentRefocusWildIndex =
+              (currentRefocusWildIndex - 1 + REFOCUS_WILD_FILES.length) % REFOCUS_WILD_FILES.length
+            updateRefocusWild()
+          })
+          btnRefocusNext.addEventListener('click', () => {
+            currentRefocusWildIndex = (currentRefocusWildIndex + 1) % REFOCUS_WILD_FILES.length
+            updateRefocusWild()
+          })
         }
+        if (REFOCUS_WILD_FILES.length > 0) updateRefocusWild()
 
-        function prevRefocusWild() {
-          currentRefocusWildIndex =
-            (currentRefocusWildIndex - 1 + REFOCUS_WILD_FILES.length) % REFOCUS_WILD_FILES.length
-          updateRefocusWild()
-        }
-
-        btnRefocusPrev.addEventListener('click', prevRefocusWild)
-        btnRefocusNext.addEventListener('click', nextRefocusWild)
-
-        if (REFOCUS_WILD_FILES.length > 0) {
-          updateRefocusWild()
-        }
-
-        // ==========================================
-        // 3. Defocus Deblur Comparison Logic
-        // ==========================================
+        // 3. Deblur Comp
         const DEBLUR_CASES = [
           'case_4',
           'case_2',
@@ -1019,29 +946,24 @@
           { key: 'Restformer', label: 'Restormer' },
           { key: 'INIKNet', label: 'INIKNet' },
         ]
-
         let currentDeblurCase = DEBLUR_CASES[0]
         let currentDeblurMethod = DEBLUR_METHODS[0].key
-
         const deblurCaseBtns = document.getElementById('caseButtons')
         const deblurMethodBtns = document.getElementById('methodButtons')
-        const deblurLayoutImg = document.getElementById('compLayoutImg')
         const deblurLeftImg = document.getElementById('compLeftImg')
         const deblurRightImg = document.getElementById('compRightImg')
+        const deblurLayoutImg = document.getElementById('compLayoutImg')
         const deblurLabelLeft = document.getElementById('compLabelLeft')
 
         function updateDeblurComp() {
           const leftSrc = `static/AIF/${currentDeblurCase}/${currentDeblurMethod}.jpg`
           const rightSrc = `static/AIF/${currentDeblurCase}/Ours.jpg`
-
           deblurLeftImg.src = leftSrc
           deblurRightImg.src = rightSrc
           deblurLayoutImg.src = rightSrc
-
           const methodObj = DEBLUR_METHODS.find((m) => m.key === currentDeblurMethod)
           deblurLabelLeft.textContent = methodObj ? methodObj.label : currentDeblurMethod
         }
-
         DEBLUR_CASES.forEach((c, idx) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (c === currentDeblurCase ? ' active' : '')
@@ -1054,7 +976,6 @@
           }
           deblurCaseBtns.appendChild(btn)
         })
-
         DEBLUR_METHODS.forEach((m) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (m.key === currentDeblurMethod ? ' active' : '')
@@ -1067,13 +988,10 @@
           }
           deblurMethodBtns.appendChild(btn)
         })
-
         updateDeblurComp()
         setupSlider('comparisonSlider')
 
-        // ==========================================
-        // 4. Bokeh Synthesis Comparison Logic
-        // ==========================================
+        // 4. Bokeh Comp
         const BOKEH_CASES = [
           'case_2',
           'case_3',
@@ -1093,15 +1011,13 @@
           { key: 'BokehDiff', label: 'BokehDiff' },
           { key: 'Bokehlicious', label: 'Bokehlicious' },
         ]
-
         let currentBokehCase = BOKEH_CASES[0]
         let currentBokehMethod = BOKEH_METHODS[0].key
-
         const bokehCaseBtns = document.getElementById('bokehCaseButtons')
         const bokehMethodBtns = document.getElementById('bokehMethodButtons')
-        const bokehLayoutImg = document.getElementById('bokehLayoutImg')
         const bokehLeftImg = document.getElementById('bokehLeftImg')
         const bokehRightImg = document.getElementById('bokehRightImg')
+        const bokehLayoutImg = document.getElementById('bokehLayoutImg')
         const bokehLabelLeft = document.getElementById('bokehLabelLeft')
 
         function updateBokehComp() {
@@ -1110,10 +1026,9 @@
           bokehLeftImg.src = leftSrc
           bokehRightImg.src = rightSrc
           bokehLayoutImg.src = rightSrc
-          const methodObj = BOKEH_METHODS.find((m) => m.key === currentBokehMethod)
-          bokehLabelLeft.textContent = methodObj ? methodObj.label : currentBokehMethod
+          const m = BOKEH_METHODS.find((x) => x.key === currentBokehMethod)
+          bokehLabelLeft.textContent = m ? m.label : currentBokehMethod
         }
-
         BOKEH_CASES.forEach((c, idx) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (c === currentBokehCase ? ' active' : '')
@@ -1126,7 +1041,6 @@
           }
           bokehCaseBtns.appendChild(btn)
         })
-
         BOKEH_METHODS.forEach((m) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (m.key === currentBokehMethod ? ' active' : '')
@@ -1139,13 +1053,10 @@
           }
           bokehMethodBtns.appendChild(btn)
         })
-
         updateBokehComp()
         setupSlider('bokehSlider')
 
-        // ==========================================
-        // 5. Refocusing Comparison Logic
-        // ==========================================
+        // 5. Refocus Comp
         const REFOCUS_DATA = [
           { label: 'Case 1', folder: 'case_9' },
           { label: 'Case 2', folder: 'case_8' },
@@ -1166,28 +1077,24 @@
           { key: 'RestformerXbokehdiff.jpg', label: 'Restormer × BokehDiff' },
           { key: 'RestformerXbokehme.jpg', label: 'Restormer × BokehMe' },
         ]
-
         let currentRefocusFolder = REFOCUS_DATA[0].folder
         let currentRefocusBtnLabel = REFOCUS_DATA[0].label
         let currentRefocusMethod = REFOCUS_METHODS[0].key
-
         const refocusCaseBtns = document.getElementById('refocusCaseButtons')
         const refocusMethodBtns = document.getElementById('refocusMethodButtons')
-        const refocusLayoutImg = document.getElementById('refocusLayoutImg')
         const refocusLeftImg = document.getElementById('refocusLeftImg')
         const refocusRightImg = document.getElementById('refocusRightImg')
+        const refocusLayoutImg = document.getElementById('refocusLayoutImg')
         const refocusLabelLeft = document.getElementById('refocusLabelLeft')
-
         function updateRefocusComp() {
           const leftSrc = `static/Refocusing/${currentRefocusFolder}/${currentRefocusMethod}`
           const rightSrc = `static/Refocusing/${currentRefocusFolder}/ours.jpg`
           refocusLeftImg.src = leftSrc
           refocusRightImg.src = rightSrc
           refocusLayoutImg.src = rightSrc
-          const methodObj = REFOCUS_METHODS.find((m) => m.key === currentRefocusMethod)
-          refocusLabelLeft.textContent = methodObj ? methodObj.label : currentRefocusMethod
+          const m = REFOCUS_METHODS.find((x) => x.key === currentRefocusMethod)
+          refocusLabelLeft.textContent = m ? m.label : currentRefocusMethod
         }
-
         REFOCUS_DATA.forEach((item) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (item.label === currentRefocusBtnLabel ? ' active' : '')
@@ -1201,7 +1108,6 @@
           }
           refocusCaseBtns.appendChild(btn)
         })
-
         REFOCUS_METHODS.forEach((m) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (m.key === currentRefocusMethod ? ' active' : '')
@@ -1214,116 +1120,63 @@
           }
           refocusMethodBtns.appendChild(btn)
         })
-
         updateRefocusComp()
         setupSlider('refocusSlider')
 
-        // ==========================================
-        // 6. Ablation Slider (UPDATED Logic)
-        // ==========================================
-        const ABLATION_CASES = ['0', '1', '2'] // Corresponds to 0.png, 1.png, 2.png
+        // 6. Ablation
+        const ABLATION_CASES = ['0', '1', '2']
         let currentAblationIndex = 0
-
-        const ablationBtnsContainer = document.getElementById('ablationButtons')
-        const ablationLayoutImg = document.getElementById('ablationLayoutImg')
-        const ablationLeftImg = document.getElementById('ablationLeftImg')
-        const ablationRightImg = document.getElementById('ablationRightImg')
-
+        const ablationBtns = document.getElementById('ablationButtons')
         function updateAblation() {
-          const caseName = ABLATION_CASES[currentAblationIndex]
-          // Path structure: static/ablation_w_or_wo_real_pair/{folder}/{case}.png
-          const leftSrc = `static/ablation_w_or_wo_real_pair/synthetic/${caseName}.png`
-          const rightSrc = `static/ablation_w_or_wo_real_pair/real_pair/${caseName}.png`
-
-          ablationLeftImg.src = leftSrc
-          ablationRightImg.src = rightSrc
-          // Layout image ensures container has correct aspect ratio
-          ablationLayoutImg.src = leftSrc
+          const c = ABLATION_CASES[currentAblationIndex]
+          document.getElementById('ablationLeftImg').src = `static/ablation_w_or_wo_real_pair/synthetic/${c}.png`
+          document.getElementById('ablationRightImg').src = `static/ablation_w_or_wo_real_pair/real_pair/${c}.png`
+          document.getElementById('ablationLayoutImg').src = `static/ablation_w_or_wo_real_pair/synthetic/${c}.png`
         }
-
-        // Generate Ablation Buttons
-        ABLATION_CASES.forEach((c, idx) => {
+        ABLATION_CASES.forEach((c, i) => {
           const btn = document.createElement('button')
-          btn.className = 'comp-btn' + (idx === currentAblationIndex ? ' active' : '')
-          btn.textContent = `Case ${idx}`
+          btn.className = 'comp-btn' + (i === currentAblationIndex ? ' active' : '')
+          btn.textContent = `Case ${i}`
           btn.onclick = () => {
-            currentAblationIndex = idx
-            Array.from(ablationBtnsContainer.children).forEach((b) => b.classList.remove('active'))
+            currentAblationIndex = i
+            Array.from(ablationBtns.children).forEach((b) => b.classList.remove('active'))
             btn.classList.add('active')
             updateAblation()
           }
-          ablationBtnsContainer.appendChild(btn)
+          ablationBtns.appendChild(btn)
         })
-
-        // Initial update
         updateAblation()
         setupSlider('ablationSlider')
 
-        // ==========================================
-        // 7. Failure Case Logic
-        // ==========================================
+        // 7. Failure
         const FAILURE_CASES = [
           { key: 'hallucinate_details', label: 'Hallucinated Details' },
           { key: 'wrong_bokeh_blur', label: 'Wrong Bokeh Blur' },
         ]
         let currentFailureCase = FAILURE_CASES[0].key
-        const failureBtnsContainer = document.getElementById('failureButtons')
-        const failureInputImg = document.getElementById('failureInputImg')
-        const failureLayoutImg = document.getElementById('failureLayoutImg')
-        const failureLeftImg = document.getElementById('failureLeftImg')
-        const failureRightImg = document.getElementById('failureRightImg')
-
+        const failureBtns = document.getElementById('failureButtons')
         function updateFailureCase() {
-          failureInputImg.src = `static/failure_case/${currentFailureCase}/input.png`
-          failureLeftImg.src = `static/failure_case/${currentFailureCase}/GT.png`
-          failureRightImg.src = `static/failure_case/${currentFailureCase}/Ours.png`
-          failureLayoutImg.src = `static/failure_case/${currentFailureCase}/Ours.png`
+          document.getElementById('failureInputImg').src = `static/failure_case/${currentFailureCase}/input.png`
+          document.getElementById('failureLeftImg').src = `static/failure_case/${currentFailureCase}/GT.png`
+          document.getElementById('failureRightImg').src = `static/failure_case/${currentFailureCase}/Ours.png`
+          document.getElementById('failureLayoutImg').src = `static/failure_case/${currentFailureCase}/Ours.png`
         }
-
         FAILURE_CASES.forEach((item) => {
           const btn = document.createElement('button')
           btn.className = 'comp-btn' + (item.key === currentFailureCase ? ' active' : '')
           btn.textContent = item.label
           btn.onclick = () => {
             currentFailureCase = item.key
-            Array.from(failureBtnsContainer.children).forEach((b) => b.classList.remove('active'))
+            Array.from(failureBtns.children).forEach((b) => b.classList.remove('active'))
             btn.classList.add('active')
             updateFailureCase()
           }
-          failureBtnsContainer.appendChild(btn)
+          failureBtns.appendChild(btn)
         })
         updateFailureCase()
         setupSlider('failureSlider')
 
-        // ==========================================
-        // 8. Tab Logic
-        // ==========================================
-        const taskButtons = document.querySelectorAll('.task-btn[data-task]')
-
-        const taskPanels = {
-          defocus: document.getElementById('task-defocus'),
-          bokeh: document.getElementById('task-bokeh'),
-          refocus: document.getElementById('task-refocus'),
-        }
-
-        taskButtons.forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const task = btn.getAttribute('data-task')
-
-            taskButtons.forEach((b) => b.classList.remove('active'))
-            btn.classList.add('active')
-
-            Object.keys(taskPanels).forEach((key) => {
-              if (taskPanels[key]) {
-                taskPanels[key].classList.toggle('active', key === task)
-              }
-            })
-          })
-        })
-
-        // ==========================================
-        // 9. Interactive Refocusing Logic (Base64 Version)
-        // ==========================================
+        // 8. Interactive
         const REGIONS = ['-1', '1', '2']
         const K_FILES = ['0', '1.0', '3.0', '5.0', '7.0', '9.0', '11.0', '13.0', '15.0', '17.0', '19.0']
         let currentRegion = '1'
@@ -1331,7 +1184,6 @@
         const mainImage = document.getElementById('mainImage')
         const kSlider = document.getElementById('kSlider')
         const pointerOverlay = document.getElementById('pointerOverlay')
-
         const MASK_DATA = {
           '-1': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAAAAADRE4smAAABwUlEQVR4nO3bwWrCQBiF0Rnp+7/ydGFpoCZjE20H/nvORhEXgfvBSNTWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBz+uoLYKEhgGSjNQHkGvcHASQa21MBZBk/XxBAkof5BZBkZ34B5Nidv7Xb/14FqxzsL4AQR/sLIMPh/gKIcLy/ANIJIJwAAkxOAAGkE0CA2d0+AQRwBGSb7S+A+qb7C6C8+f6+Daxi27l//9bzyfZf76aC32y9SwAFXF6/+QxQwSv7t493XQUr9csZOALquJSAAAo5X0B3BITqD0+o4PxdHwEU5t+fAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf+oTysAcIOHSlqMAAAAASUVORK5CYII=',
           1: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAAAAADRE4smAAAIzklEQVR4nO3dwW4bSQwA0Z5F/v+XtYe1N4ktydJMk012VV2CBIhtgE/s0diWjtswcv+s/gJsbQKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHgCgCcAeAKAJwB4AoAnAHi/Vn8BNsYY4xhj3JZ84iWf1f7v+PL37HkIYGFfh/9Z5kwEsKxH4x8jk4AAFvVs/GOMNAMCWNKP4x8jiYBPAxd0vDT/15RcTQD5vTzYDAECSO+Nsb64Kq4kgOzem2m4AAEk9+5EowUIoHrBAgSQ24lxxgoQQGopz+zeSgD1C1UjgMxOjjJSgAASOz3IQAECaFGcAAHAE0CPwlaAAPK6NMQoAQKAJ4AuBa0AAbQpRoAA+hQiQADwBNCoiBUggE4FCBBAWjOmN1+AAOAJIK0pv+cxfQUIoFmzBQigW5MFCCCvSb/rN1eAAOAJoF9TV4AAEpv1+94zBQgAngA6NnEFCKBl8wQIoGfTBAggsZkXb7M+lgDymnsHZ9JHE0Db5ggQQFrTv5E35QMKoHEzBAgAngCyiviJzgkvIyeA3l0WIIDmXRUggO5dPAYE0L9LAgQATwAbdGUFCCCp0Bf7u/DBBbBF5wUIIKfo14g9/VxAALt0UoAAUsp4kehzn0MA+3RKgO8dnNXtc0K3sIVw5j0A3QC53W63EfeOgCdgCSC125c/Z/e+AN85NKXjzsyDzoE3B+oGyOrbM/Wgh96bdwQEkNLdYZc4BwSQ1e37vCsIEEBOd8Yf2BsCBLBlr18ICGBlgWvhVQEC2LUXl4AA9u0lAQLYuFeWgAC27mcCAlha/JPDnwgIYPueCxDA/j0VIABAzwQIgNATAQJYW9K3CB5fCgoA0iMCAsB0X4AAON1dAgJYXO7PCXwnIABW3wgIgNYXAQJYXfrP5f+9BAQA7E8CAkD2m4AAoH0SEAC2/wgIANxx+PoA8A43AD0BwBMAPAEsb+1LdAgAngDgCQCeANa39CJAAPAEAE8A8AQATwDwBABPAAVa+TxQAPAEAE8A8ARQoYUXAQKAJwB4AoAngBKtuwgQADwBwBNAjZadAQKAJwB4AijSqjNAAPAEUKVFK0AA8AQATwDwBFCmNRcBAoAnAHgCqNOSM0AA8AQATwCFWnEGCACeACq1YAUIAJ4A4AmgVPlngADgCaBW6StAAPAEAE8A8ARQrOyLAAHAE0C1kleAAOAJoFy5K0AA8AQATwDwBFCv1IsAAcATADwBFCzzDBAAPAHAE0DFEs8AAcATQMnyVoAA4AkAngBqlnYGCACeAOAJoGhZZ4AA4AmgakkrQADwBFC2nBUgAHgCqFvKChAAPAHAE0DhMs4AAcATQOUSVoAA4AkAngBKF38GCKB24QIEAE8A8ARQvOgzQADVCxYgAHgCKF/sChAAPAHUL3QFCACeAOAJAJ4AGhR5ESAAeAKAJ4AOBZ4BAoAnAHgCaFHcGSAAeALoUdgKEAA8AcATQJOizgABdClIgADgCaBNMStAAPAE0KeQFSAAeAJoVMQKEAA8AXQqYAUIoFXzBQigV9MFCACeAJo1ewUIoFuTBQgAngDaNXcFCKBfUwUIAJ4A4AmgYbeJh4AAWjZPgAB6Nk2AAJo2S4AAujbpQkAAfZsiQACNmyFAAJ2bcAwIoHeXBQigeVcFCKB7F48BAfTvkgABbNCVJSCALTpPQACbdFaAAHbp5BIQwD6dEiCAjTojQAA7deIYEMBevS1AAJv17hIQwHa9R0AAG/aOAAHs2BtLQAB79rIAAWzaq0tAANv2mgAB7NtLS0AAO/cCAQHs3Y8EBLB7PxAQwP49JSAAQk8ICIDRQwICoPRAgAAw3V8CAgB1j4AAUH0ncMS9MbkV7fjzL24AXn895t0A1D72gADQHQKg5zUAPAHAEwA8AcATADwBwBMAPAHAEwA8AcATADwBwBMAPAHAEwA8AcATADwBwBMAPAHAEwA8AcATADwBwBMAPAHAEwA8AcATADwBwBMAPAHAEwA8AcATADwBwBMAPAHAEwC8X6u/AFvYIQByxxgC4PbxWsECIPbHC8YLgNXx9R8EQOrb+AVA6s74BcDp7vi9EYTpwfwFAOnR/AXA6OH8BYDo8fwFQE8A8AQA6MkJIAB6AgD07L0hBQDII4Dds/kLYP+ezl8A2/d8/n43cJd+z/k2jo/rvh9m/9//893Dt+iVWd/NDbBBp6c/vAbYoSvzdwPs0e00A68B9ukUAY+AfTrxWL7dPAKYfZwZh0fAXv1wCty5OyCAjTvG+DwYHsoQwEaduQr0InCffBbA7tyNAJ8FbNLZ24EC2KAr94IF0L1L3wkQQOsuzn6MIYC+zZj+EEDXJo1fAB2bNvwxBNCtqcMfQwC9mj5+7wS2KmD+AmhUxPwF0KeQ+QuAngC6FLMABEBPAE0KWgACoCcAeALoUdQJIAB6AmhR2AIQAD0BdChuAQigQ4HzFwA9AcATADwB1C/yEkAA9ARQvtAFIAB6Aqhe7AIQQPWC5y8AegKoXfQCEAA9fzewcuGPfzdA6RLmLwB6HgFly3j8uwHqljN/AVQtaf4CoCeAmmUtAAHQE0DJ0haAAOh5H6BgeY9/N0DFMucvgHqlzt8joFq543cDVCt7/m6AUqWPXwCVWjB+j4BCLZm/G6BKa8YvgPUdY9yWjd/3Dl7dusl/5AZY2PLpDy8CV1Zh/m6AVZWY/nAD4BPAmqosAAGsqcz8x7+UFrBdaCLqowAAAABJRU5ErkJggg==',
@@ -1340,51 +1192,36 @@
 
         const masks = {}
         let masksLoaded = 0
-
         REGIONS.forEach((r) => {
           const img = new Image()
-          if (MASK_DATA[r]) {
-            img.src = MASK_DATA[r]
-          } else {
-            console.error('Missing mask data for region:', r)
-          }
-
+          img.src = MASK_DATA[r]
           img.onload = () => {
-            const canvas = document.getElementById(`maskCanvas_${r}`)
-            canvas.width = img.naturalWidth
-            canvas.height = img.naturalHeight
-            canvas.getContext('2d').drawImage(img, 0, 0)
-            masks[r] = canvas
+            const c = document.getElementById(`maskCanvas_${r}`)
+            c.width = img.naturalWidth
+            c.height = img.naturalHeight
+            c.getContext('2d').drawImage(img, 0, 0)
+            masks[r] = c
             masksLoaded++
           }
         })
-
         function updateInteractiveImage() {
           mainImage.src = `static/case_1/input/${currentRegion}/infocus_2_half_2_crop512__${currentRegion}_K${K_FILES[currentKIndex]}.png`
         }
-
         kSlider.addEventListener('input', (e) => {
           currentKIndex = parseInt(e.target.value, 10)
           updateInteractiveImage()
         })
-
         mainImage.addEventListener('click', (e) => {
           if (masksLoaded < REGIONS.length) return
-
           const rect = mainImage.getBoundingClientRect()
           const x = e.clientX - rect.left
           const y = e.clientY - rect.top
-
           for (const r of REGIONS) {
             if (!masks[r]) continue
-
-            const maskCanvas = masks[r]
-            const scaleX = maskCanvas.width / rect.width
-            const scaleY = maskCanvas.height / rect.height
-
-            const ctx = maskCanvas.getContext('2d')
-            const p = ctx.getImageData(x * scaleX, y * scaleY, 1, 1).data
-
+            const mc = masks[r]
+            const sx = mc.width / rect.width
+            const sy = mc.height / rect.height
+            const p = mc.getContext('2d').getImageData(x * sx, y * sy, 1, 1).data
             if ((p[0] + p[1] + p[2]) / 3 > 10) {
               currentRegion = r
               pointerOverlay.style.display = 'none'
@@ -1393,169 +1230,177 @@
             }
           }
         })
-      })
-      // ==========================================
-      // 10. In-the-wild Tab Logic (Merged Section)
-      // ==========================================
-      const wildRestoreBtn = document.getElementById('btn-wild-restore')
-      const wildRefocusBtn = document.getElementById('btn-wild-refocus')
-      const wildRestorePanel = document.getElementById('panel-wild-restore')
-      const wildRefocusPanel = document.getElementById('panel-wild-refocus')
 
-      wildRestoreBtn.addEventListener('click', () => {
-        wildRestoreBtn.classList.add('active')
-        wildRefocusBtn.classList.remove('active')
-        wildRestorePanel.style.display = 'block'
-        wildRefocusPanel.style.display = 'none'
-      })
+        // 9. Tab Switching Logic (Wild)
+        const wildRestoreBtn = document.getElementById('btn-wild-restore')
+        const wildRefocusBtn = document.getElementById('btn-wild-refocus')
+        const wildRestorePanel = document.getElementById('panel-wild-restore')
+        const wildRefocusPanel = document.getElementById('panel-wild-refocus')
+        wildRestoreBtn.addEventListener('click', () => {
+          wildRestoreBtn.classList.add('active')
+          wildRefocusBtn.classList.remove('active')
+          wildRestorePanel.classList.add('active')
+          wildRefocusPanel.classList.remove('active')
+        })
+        wildRefocusBtn.addEventListener('click', () => {
+          wildRefocusBtn.classList.add('active')
+          wildRestoreBtn.classList.remove('active')
+          wildRestorePanel.classList.remove('active')
+          wildRefocusPanel.classList.add('active')
+        })
 
-      wildRefocusBtn.addEventListener('click', () => {
-        wildRefocusBtn.classList.add('active')
-        wildRestoreBtn.classList.remove('active')
-        wildRestorePanel.style.display = 'none'
-        wildRefocusPanel.style.display = 'block'
-      })
-      // ==========================================
-      // 11. NEW In-the-wild Images Logic (Auto-Play Added)
-      // ==========================================
+        // 10. Tab Switching Logic (ITW)
+        const ITW_RESTORE_FILES = [
+          'photographer_1.jpg',
+          'two.jpg',
+          'high_angle_people.jpg',
+          'Mr_beans.jpg',
+          'female.jpg',
+          'kovil.jpg',
+          'reflect_1.jpg',
+          'toy-bricks.jpg',
+          'happy-girl-friends.jpg',
+          'woman_3.jpg',
+        ]
+        const ITW_REFOCUS_FILES = [
+          'white_flower_red_dress.png',
+          'throw.jpg',
+          'happy-friends.jpg',
+          'get-out.jpg',
+          'whiplash.jpg',
+          'group_black_1.jpg',
+          'photographer.jpg',
+          'two_1.jpg',
+          'female.jpg',
+          'status.jpg',
+          'group_7_1.jpg',
+          'cello.jpg',
+          'black-male.jpg',
+          'always-smiling.jpg',
+          'group_4.jpg',
+          'group_black_0.jpg',
+          'alphabet.jpg',
+          'woman_5.jpg',
+          'i-was-born-for-business_0.jpg',
+        ]
+        let itwRestoreInterval = null
+        let itwRefocusInterval = null
 
-      // --- Part A: Data Definition ---
-      const ITW_RESTORE_FILES = ['female.jpg', 'high_angle_people.jpg', 'kovil.jpg', 'toy-bricks.jpg']
-      const ITW_REFOCUS_FILES = [
-        'happy-friends.jpg',
-        'photographer.jpg',
-        'female.jpg',
-        'alphabet.jpg',
-        'status.jpg',
-        'white_flower_red_dress.jpg',
-      ]
-
-      let itwRestoreInterval = null
-      let itwRefocusInterval = null
-
-      // --- Part B: Logic for Refocusing Tab ---
-      let currentItwRefocusIndex = 0
-      const itwRefocusInputImg = document.getElementById('itwRefocusInputImg')
-      const itwRefocusOutputImg = document.getElementById('itwRefocusOutputImg')
-      const itwRefocusCounter = document.getElementById('itwRefocusCounter')
-      const btnItwRefocusPrev = document.getElementById('itwRefocusPrev')
-      const btnItwRefocusNext = document.getElementById('itwRefocusNext')
-
-      function updateItwRefocus() {
-        if (ITW_REFOCUS_FILES.length === 0) return
-        const filename = ITW_REFOCUS_FILES[currentItwRefocusIndex]
-
-        itwRefocusInputImg.src = `static/in-the-wild/Refocusing/input/${filename}`
-        itwRefocusOutputImg.src = `static/in-the-wild/Refocusing/output/${filename}`
-        itwRefocusCounter.textContent = `Case ${currentItwRefocusIndex + 1} / ${ITW_REFOCUS_FILES.length}`
-      }
-
-      function nextItwRefocus() {
-        currentItwRefocusIndex = (currentItwRefocusIndex + 1) % ITW_REFOCUS_FILES.length
-        updateItwRefocus()
-      }
-
-      function prevItwRefocus() {
-        currentItwRefocusIndex = (currentItwRefocusIndex - 1 + ITW_REFOCUS_FILES.length) % ITW_REFOCUS_FILES.length
-        updateItwRefocus()
-      }
-
-      function startItwRefocusAutoPlay() {
-        if (itwRefocusInterval) clearInterval(itwRefocusInterval)
-        itwRefocusInterval = setInterval(nextItwRefocus, AUTO_PLAY_DELAY)
-      }
-
-      if (btnItwRefocusPrev && btnItwRefocusNext) {
-        btnItwRefocusPrev.addEventListener('click', () => {
+        let currentItwRefocusIndex = 0
+        const itwRefocusInput = document.getElementById('itwRefocusInputImg')
+        const itwRefocusOutput = document.getElementById('itwRefocusOutputImg')
+        const itwRefocusCtr = document.getElementById('itwRefocusCounter')
+        function updateItwRefocus() {
+          if (ITW_REFOCUS_FILES.length === 0) return
+          const f = ITW_REFOCUS_FILES[currentItwRefocusIndex]
+          itwRefocusInput.src = `static/in-the-wild/Refocusing/input/${f}`
+          itwRefocusOutput.src = `static/in-the-wild/Refocusing/output/${f}`
+          itwRefocusCtr.textContent = `Case ${currentItwRefocusIndex + 1} / ${ITW_REFOCUS_FILES.length}`
+        }
+        function nextItwRefocus() {
+          currentItwRefocusIndex = (currentItwRefocusIndex + 1) % ITW_REFOCUS_FILES.length
+          updateItwRefocus()
+        }
+        function prevItwRefocus() {
+          currentItwRefocusIndex = (currentItwRefocusIndex - 1 + ITW_REFOCUS_FILES.length) % ITW_REFOCUS_FILES.length
+          updateItwRefocus()
+        }
+        function startItwRefocusAutoPlay() {
+          if (itwRefocusInterval) clearInterval(itwRefocusInterval)
+          itwRefocusInterval = setInterval(nextItwRefocus, AUTO_PLAY_DELAY)
+        }
+        document.getElementById('itwRefocusPrev').addEventListener('click', () => {
           prevItwRefocus()
-          startItwRefocusAutoPlay()
+          // startItwRefocusAutoPlay()
         })
-        btnItwRefocusNext.addEventListener('click', () => {
+        document.getElementById('itwRefocusNext').addEventListener('click', () => {
           nextItwRefocus()
-          startItwRefocusAutoPlay()
+          // startItwRefocusAutoPlay()
         })
-      }
 
-      // --- Part C: Logic for Restoration Tab ---
-      let currentItwIndex = 0
-      const itwInputImg = document.getElementById('itwInputImg')
-      const itwOutputImg = document.getElementById('itwOutputImg')
-      const itwCounter = document.getElementById('itwCounter')
-      const btnItwPrev = document.getElementById('itwPrev')
-      const btnItwNext = document.getElementById('itwNext')
-
-      function updateItwRestore() {
-        if (ITW_RESTORE_FILES.length === 0) return
-        const filename = ITW_RESTORE_FILES[currentItwIndex]
-
-        itwInputImg.src = `static/in-the-wild/AIF/input/${filename}`
-        itwOutputImg.src = `static/in-the-wild/AIF/output/${filename}`
-        itwCounter.textContent = `Case ${currentItwIndex + 1} / ${ITW_RESTORE_FILES.length}`
-      }
-
-      function nextItwRestore() {
-        currentItwIndex = (currentItwIndex + 1) % ITW_RESTORE_FILES.length
-        updateItwRestore()
-      }
-
-      function prevItwRestore() {
-        currentItwIndex = (currentItwIndex - 1 + ITW_RESTORE_FILES.length) % ITW_RESTORE_FILES.length
-        updateItwRestore()
-      }
-
-      function startItwRestoreAutoPlay() {
-        if (itwRestoreInterval) clearInterval(itwRestoreInterval)
-        itwRestoreInterval = setInterval(nextItwRestore, AUTO_PLAY_DELAY)
-      }
-
-      if (btnItwPrev && btnItwNext) {
-        btnItwPrev.addEventListener('click', () => {
+        let currentItwIndex = 0
+        const itwInput = document.getElementById('itwInputImg')
+        const itwOutput = document.getElementById('itwOutputImg')
+        const itwCtr = document.getElementById('itwCounter')
+        function updateItwRestore() {
+          if (ITW_RESTORE_FILES.length === 0) return
+          const f = ITW_RESTORE_FILES[currentItwIndex]
+          itwInput.src = `static/in-the-wild/AIF/input/${f}`
+          itwOutput.src = `static/in-the-wild/AIF/output/${f}`
+          itwCtr.textContent = `Case ${currentItwIndex + 1} / ${ITW_RESTORE_FILES.length}`
+        }
+        function nextItwRestore() {
+          currentItwIndex = (currentItwIndex + 1) % ITW_RESTORE_FILES.length
+          updateItwRestore()
+        }
+        function prevItwRestore() {
+          currentItwIndex = (currentItwIndex - 1 + ITW_RESTORE_FILES.length) % ITW_RESTORE_FILES.length
+          updateItwRestore()
+        }
+        function startItwRestoreAutoPlay() {
+          if (itwRestoreInterval) clearInterval(itwRestoreInterval)
+          itwRestoreInterval = setInterval(nextItwRestore, AUTO_PLAY_DELAY)
+        }
+        document.getElementById('itwPrev').addEventListener('click', () => {
           prevItwRestore()
-          startItwRestoreAutoPlay()
+          // startItwRestoreAutoPlay()
         })
-        btnItwNext.addEventListener('click', () => {
+        document.getElementById('itwNext').addEventListener('click', () => {
           nextItwRestore()
-          startItwRestoreAutoPlay()
+          // startItwRestoreAutoPlay()
         })
-      }
 
-      // --- Part D: Tab Switching Logic for New Section ---
-      const btnItwTabRestore = document.getElementById('btn-itw-restore')
-      const btnItwTabRefocus = document.getElementById('btn-itw-refocus')
-      const panelItwRestore = document.getElementById('panel-itw-restore')
-      const panelItwRefocus = document.getElementById('panel-itw-refocus')
+        const btnItwTabRestore = document.getElementById('btn-itw-restore')
+        const btnItwTabRefocus = document.getElementById('btn-itw-refocus')
+        const panelItwRestore = document.getElementById('panel-itw-restore')
+        const panelItwRefocus = document.getElementById('panel-itw-refocus')
 
-      btnItwTabRestore.addEventListener('click', () => {
-        btnItwTabRestore.classList.add('active')
-        btnItwTabRefocus.classList.remove('active')
-        panelItwRestore.style.display = 'block'
-        panelItwRefocus.style.display = 'none'
+        btnItwTabRestore.addEventListener('click', () => {
+          btnItwTabRestore.classList.add('active')
+          btnItwTabRefocus.classList.remove('active')
+          panelItwRestore.classList.add('active')
+          panelItwRefocus.classList.remove('active')
+          if (ITW_RESTORE_FILES.length > 0) {
+            updateItwRestore()
+            // startItwRestoreAutoPlay()
+          }
+          if (itwRefocusInterval) clearInterval(itwRefocusInterval)
+        })
+        btnItwTabRefocus.addEventListener('click', () => {
+          btnItwTabRefocus.classList.add('active')
+          btnItwTabRestore.classList.remove('active')
+          panelItwRestore.classList.remove('active')
+          panelItwRefocus.classList.add('active')
+          if (ITW_REFOCUS_FILES.length > 0) {
+            updateItwRefocus()
+            // startItwRefocusAutoPlay()
+          }
+          if (itwRestoreInterval) clearInterval(itwRestoreInterval)
+        })
 
         if (ITW_RESTORE_FILES.length > 0) {
           updateItwRestore()
-          startItwRestoreAutoPlay()
+          // startItwRestoreAutoPlay()
         }
-        if (itwRefocusInterval) clearInterval(itwRefocusInterval)
-      })
 
-      btnItwTabRefocus.addEventListener('click', () => {
-        btnItwTabRefocus.classList.add('active')
-        btnItwTabRestore.classList.remove('active')
-        panelItwRestore.style.display = 'none'
-        panelItwRefocus.style.display = 'block'
-
-        if (ITW_REFOCUS_FILES.length > 0) {
-          updateItwRefocus()
-          startItwRefocusAutoPlay()
+        // 11. Comparison Task Tabs
+        const taskButtons = document.querySelectorAll('.task-btn[data-task]')
+        const taskPanels = {
+          defocus: document.getElementById('task-defocus'),
+          bokeh: document.getElementById('task-bokeh'),
+          refocus: document.getElementById('task-refocus'),
         }
-        if (itwRestoreInterval) clearInterval(itwRestoreInterval)
+        taskButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const task = btn.getAttribute('data-task')
+            taskButtons.forEach((b) => b.classList.remove('active'))
+            btn.classList.add('active')
+            Object.keys(taskPanels).forEach((key) => {
+              if (taskPanels[key]) taskPanels[key].classList.toggle('active', key === task)
+            })
+          })
+        })
       })
-
-      // --- Initialization ---
-      if (ITW_RESTORE_FILES.length > 0) {
-        updateItwRestore()
-        startItwRestoreAutoPlay()
-      }
     </script>
   </body>
 </html>
