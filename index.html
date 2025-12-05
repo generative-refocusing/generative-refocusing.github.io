@@ -48,6 +48,11 @@
         margin: 0 auto;
         position: relative;
       }
+      /* ====== 新增這一段 ====== */
+      .container.is-wider {
+        max-width: 1500px; /* 專門給 Gemini 區塊用，讓圖片可以更大 */
+      }
+      /* ====================== */
 
       /* ====== Title & Header Area ====== */
       .hero-body {
@@ -446,6 +451,37 @@
       .hidden-canvas {
         display: none;
       }
+      /* ====== Author Section Styles (修改後) ====== */
+      .author-names {
+        font-size: 1.35rem;
+        margin-bottom: 12px;
+      }
+      .author-block {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      .author-block a {
+        color: #719ef9; /* 這裡改成藍色 (你可以改用 blue 或其他色碼) */
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .author-block a:hover {
+        color: #2c6dbc; /* 滑鼠移過去時變深藍色 */
+        border-bottom: 1px solid #2c6dbc;
+      }
+      .author-affiliations {
+        font-size: 1.1rem;
+        color: #4a4a4a;
+      }
+      .affiliation-block {
+        display: inline-block;
+        margin: 0 15px;
+      }
+      sup {
+        vertical-align: super;
+        font-size: smaller;
+      }
     </style>
   </head>
   <body>
@@ -462,11 +498,28 @@
       </h1>
       
       <div class="meta">
-        <span class="author-block">Supplementary Material</span><br />
-        <span class="author-block">Anonymous authors</span><br />
-        <span class="author-block">Submission ID: 6928</span>
+        <div class="author-names">
+          <span class="author-block">
+            <a href="https://generative-refocusing.github.io/" target="_blank">Chun-Wei Tuan Mu</a><sup>1</sup>
+          </span>
+          <span class="author-block">
+            <a href="https://jbhuang0604.github.io/" target="_blank">Jia-Bin Huang</a><sup>2</sup>
+          </span>
+          <span class="author-block">
+            <a href="https://yulunalexliu.github.io/" target="_blank">Yu-Lun Liu</a><sup>1</sup>
+          </span>
+        </div>
+    
+        <div class="author-affiliations">
+          <span class="affiliation-block">
+            <sup>1</sup>National Yang Ming Chiao Tung University
+          </span>
+          <span class="affiliation-block">
+            <sup>2</sup>University of Maryland, College Park
+          </span>
+        </div>
       </div>
-    </div>
+      </div>
     </section>
 
     <section class="section is-light">
@@ -611,6 +664,38 @@
     </section>
 
     <section class="section is-white">
+      <div class="container is-wider">
+        <h2 class="section-title">Comparison with Gemini 3 (Nano Banana Pro)</h2>
+
+        <div class="wild-display-area active" style="display: block;">
+          <div class="wild-container">
+            <button class="nav-arrow" id="geminiPrev">&#10094;</button>
+            
+            <div class="wild-side-by-side">
+              <div class="wild-img-box">
+                <img src="" alt="Input" id="geminiInputImg" />
+                <div class="wild-label">Input</div>
+              </div>
+              
+              <div class="wild-img-box">
+                <img src="" alt="Nano Banana Pro" id="geminiNanoImg" />
+                <div class="wild-label">Nano Banana Pro</div>
+              </div>
+              
+              <div class="wild-img-box">
+                <img src="" alt="Ours" id="geminiOursImg" />
+                <div class="wild-label">Ours</div>
+              </div>
+            </div>
+
+            <button class="nav-arrow" id="geminiNext">&#10095;</button>
+          </div>
+          <div class="wild-counter" id="geminiCounter">Case 1 / 6</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section is-light">
       <div class="container">
         <h2 class="section-title">Visual Comparison</h2>
 
@@ -697,7 +782,7 @@
       </div>
     </section>
 
-    <section class="section is-light">
+    <section class="section is-white">
       <div class="container">
         <h2 class="section-title">Visual Comparison for BokehNet Training Ablation</h2>
         <div class="description-text">
@@ -733,7 +818,7 @@
       </div>
     </section>
 
-    <section class="section is-white" style="padding-bottom: 60px">
+    <section class="section is-light" style="padding-bottom: 60px">
       <div class="container">
         <h2 class="section-title">Failure Cases</h2>
         <div class="description-text">
@@ -1400,6 +1485,59 @@
             })
           })
         })
+        // ==========================================
+        // 12. Gemini 3 (Nano Banana Pro) Comparison
+        // ==========================================
+        const GEMINI_FILES = [
+          'fashion_1980.jpg',
+          'black-male.jpg',
+          'black_white_kiss.jpg',
+          'whiplash.jpg',
+          'white_flower_red_dress.jpg',
+          'kid.jpg'
+        ]
+        
+        let currentGeminiIndex = 0
+        
+        const geminiInputImg = document.getElementById('geminiInputImg')
+        const geminiNanoImg = document.getElementById('geminiNanoImg')
+        const geminiOursImg = document.getElementById('geminiOursImg')
+        const geminiCounter = document.getElementById('geminiCounter')
+        const geminiPrevBtn = document.getElementById('geminiPrev')
+        const geminiNextBtn = document.getElementById('geminiNext')
+
+        // 設定圖片路徑，請依據你的資料夾結構修改這裡
+        const GEMINI_BASE_PATH = 'static/gemini_comparison' 
+
+        function updateGeminiComp() {
+          if (GEMINI_FILES.length === 0) return
+          const filename = GEMINI_FILES[currentGeminiIndex]
+          
+          // 路徑假設：
+          // Input -> static/gemini_comparison/input/filename
+          // Nano  -> static/gemini_comparison/nano/filename
+          // Ours  -> static/gemini_comparison/ours/filename
+          geminiInputImg.src = `${GEMINI_BASE_PATH}/input/${filename}`
+          geminiNanoImg.src = `${GEMINI_BASE_PATH}/nanobanana/${filename}`
+          geminiOursImg.src = `${GEMINI_BASE_PATH}/ours/${filename}`
+          
+          geminiCounter.textContent = `Case ${currentGeminiIndex + 1} / ${GEMINI_FILES.length}`
+        }
+
+        if (geminiPrevBtn && geminiNextBtn) {
+          geminiPrevBtn.addEventListener('click', () => {
+            currentGeminiIndex = (currentGeminiIndex - 1 + GEMINI_FILES.length) % GEMINI_FILES.length
+            updateGeminiComp()
+          })
+          
+          geminiNextBtn.addEventListener('click', () => {
+            currentGeminiIndex = (currentGeminiIndex + 1) % GEMINI_FILES.length
+            updateGeminiComp()
+          })
+        }
+
+        // 初始化
+        updateGeminiComp()
       })
     </script>
   </body>
