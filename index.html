@@ -537,12 +537,9 @@
         </div>
 
         <div id="panel-wild-restore" class="wild-display-area active">
-          <div class="comp-controls" style="margin-bottom: 15px;">
-            <div class="comp-row">
-              <button class="nav-arrow" id="wildPrev">&#10094;</button>
-              <span class="wild-counter" id="wildCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 10</span>
-              <button class="nav-arrow" id="wildNext">&#10095;</button>
-            </div>
+          <div class="comp-controls">
+            <div class="comp-row" id="wildRestoreCaseButtons">
+              </div>
           </div>
           
           <div class="slider-container" id="slider-wild-restore">
@@ -562,12 +559,9 @@
         </div>
 
         <div id="panel-wild-refocus" class="wild-display-area">
-          <div class="comp-controls" style="margin-bottom: 15px;">
-            <div class="comp-row">
-              <button class="nav-arrow" id="wildRefocusPrev">&#10094;</button>
-              <span class="wild-counter" id="wildRefocusCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 10</span>
-              <button class="nav-arrow" id="wildRefocusNext">&#10095;</button>
-            </div>
+          <div class="comp-controls">
+            <div class="comp-row" id="wildRefocusCaseButtons">
+              </div>
           </div>
 
           <div class="slider-container" id="slider-wild-refocus">
@@ -598,12 +592,9 @@
         </div>
 
         <div id="panel-itw-restore" class="wild-display-area active">
-          <div class="comp-controls" style="margin-bottom: 15px;">
-            <div class="comp-row">
-              <button class="nav-arrow" id="itwPrev">&#10094;</button>
-              <span class="wild-counter" id="itwCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 10</span>
-              <button class="nav-arrow" id="itwNext">&#10095;</button>
-            </div>
+          <div class="comp-controls">
+            <div class="comp-row" id="itwRestoreCaseButtons">
+               </div>
           </div>
 
           <div class="slider-container" id="slider-itw-restore">
@@ -623,12 +614,9 @@
         </div>
 
         <div id="panel-itw-refocus" class="wild-display-area">
-          <div class="comp-controls" style="margin-bottom: 15px;">
-            <div class="comp-row">
-              <button class="nav-arrow" id="itwRefocusPrev">&#10094;</button>
-              <span class="wild-counter" id="itwRefocusCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 20</span>
-              <button class="nav-arrow" id="itwRefocusNext">&#10095;</button>
-            </div>
+          <div class="comp-controls">
+            <div class="comp-row" id="itwRefocusCaseButtons">
+              </div>
           </div>
 
           <div class="slider-container" id="slider-itw-refocus">
@@ -701,9 +689,13 @@
         <h2 class="section-title">Comparison with Gemini 3 (Nano Banana Pro)</h2>
 
         <div class="wild-display-area active" style="display: block;">
+          
+          <div class="comp-controls" style="margin-bottom: 20px;">
+            <div class="comp-row" id="geminiCaseButtons">
+               </div>
+          </div>
+
           <div class="wild-container">
-            <button class="nav-arrow" id="geminiPrev">&#10094;</button>
-            
             <div class="wild-side-by-side">
               <div class="wild-img-box">
                 <img src="" alt="Input" id="geminiInputImg" />
@@ -720,11 +712,8 @@
                 <div class="wild-label">Ours</div>
               </div>
             </div>
-
-            <button class="nav-arrow" id="geminiNext">&#10095;</button>
           </div>
-          <div class="wild-counter" id="geminiCounter">Case 1 / 6</div>
-        </div>
+          </div>
       </div>
     </section>
 
@@ -945,9 +934,8 @@
       }
 
       document.addEventListener('DOMContentLoaded', function () {
-        // ... (Logics retained)
        // ==========================================
-        // 1. Historical Logic (Slider Version)
+        // 1. Historical Logic (Buttons Version)
         // ==========================================
         const WILD_FILES = [
           'apollo11_shake_hand.jpg',
@@ -962,39 +950,43 @@
           'queen_black.jpg',
         ]
         let currentWildIndex = 0
-        const wildCounter = document.getElementById('wildCounter')
         const wildRestoreLayout = document.getElementById('wildRestoreLayout')
         const wildRestoreInput = document.getElementById('wildRestoreInput')
         const wildRestoreOutput = document.getElementById('wildRestoreOutput')
+        const wildRestoreBtnContainer = document.getElementById('wildRestoreCaseButtons')
 
-        function updateWild() {
+        function updateWildRestore() {
           if (WILD_FILES.length === 0) return
           const filename = WILD_FILES[currentWildIndex]
           const inputSrc = `static/Historical/AIF/input/${filename}`
           const outputSrc = `static/Historical/AIF/output/${filename}`
           
-          // Slider 需要更新三張圖：Layout(撐開高度), Left(左), Right(右)
           wildRestoreInput.src = inputSrc
           wildRestoreOutput.src = outputSrc
-          wildRestoreLayout.src = outputSrc // 使用 Output 來撐開 Layout 較保險
-          
-          wildCounter.textContent = `Case ${currentWildIndex + 1} / ${WILD_FILES.length}`
+          wildRestoreLayout.src = outputSrc 
         }
-        
-        document.getElementById('wildPrev').addEventListener('click', () => {
-            currentWildIndex = (currentWildIndex - 1 + WILD_FILES.length) % WILD_FILES.length
-            updateWild()
+
+        // 生成 Historical Restore 按鈕
+        wildRestoreBtnContainer.innerHTML = '<span class="comp-label">Case:</span>';
+        WILD_FILES.forEach((_, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (idx === currentWildIndex ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentWildIndex = idx
+            // 更新按鈕樣式
+            Array.from(wildRestoreBtnContainer.children).forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateWildRestore()
+          }
+          wildRestoreBtnContainer.appendChild(btn)
         })
-        document.getElementById('wildNext').addEventListener('click', () => {
-            currentWildIndex = (currentWildIndex + 1) % WILD_FILES.length
-            updateWild()
-        })
         
-        updateWild()
-        setupSlider('slider-wild-restore') // 初始化 Slider
+        updateWildRestore()
+        setupSlider('slider-wild-restore') 
 
         // ==========================================
-        // 2. Refocus Wild (Slider Version)
+        // 2. Refocus Wild (Buttons Version)
         // ==========================================
         const REFOCUS_WILD_FILES = [
           'kid.png',
@@ -1009,10 +1001,10 @@
           '25807218721_bf0f777e36_b.png',
         ]
         let currentRefocusWildIndex = 0
-        const wildRefocusCounter = document.getElementById('wildRefocusCounter')
         const wildRefocusLayout = document.getElementById('wildRefocusLayout')
         const wildRefocusInput = document.getElementById('wildRefocusInput')
         const wildRefocusOutput = document.getElementById('wildRefocusOutput')
+        const wildRefocusBtnContainer = document.getElementById('wildRefocusCaseButtons')
 
         function updateRefocusWild() {
           if (REFOCUS_WILD_FILES.length === 0) return
@@ -1023,21 +1015,25 @@
           wildRefocusInput.src = inputSrc
           wildRefocusOutput.src = outputSrc
           wildRefocusLayout.src = outputSrc
-          
-          wildRefocusCounter.textContent = `Case ${currentRefocusWildIndex + 1} / ${REFOCUS_WILD_FILES.length}`
         }
 
-        document.getElementById('wildRefocusPrev').addEventListener('click', () => {
-          currentRefocusWildIndex = (currentRefocusWildIndex - 1 + REFOCUS_WILD_FILES.length) % REFOCUS_WILD_FILES.length
-          updateRefocusWild()
-        })
-        document.getElementById('wildRefocusNext').addEventListener('click', () => {
-          currentRefocusWildIndex = (currentRefocusWildIndex + 1) % REFOCUS_WILD_FILES.length
-          updateRefocusWild()
+        // 生成 Historical Refocus 按鈕
+        wildRefocusBtnContainer.innerHTML = '<span class="comp-label">Case:</span>';
+        REFOCUS_WILD_FILES.forEach((_, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (idx === currentRefocusWildIndex ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentRefocusWildIndex = idx
+            Array.from(wildRefocusBtnContainer.children).forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateRefocusWild()
+          }
+          wildRefocusBtnContainer.appendChild(btn)
         })
         
         updateRefocusWild()
-        setupSlider('slider-wild-refocus') // 初始化 Slider
+        setupSlider('slider-wild-refocus')
         // 3. Deblur Comp
         const DEBLUR_CASES = [
           'case_4',
@@ -1369,7 +1365,7 @@
         })
 
         // ==========================================
-        // 10. Tab Switching Logic (ITW) & Sliders
+        // 10. ITW Logic (Buttons Version)
         // ==========================================
         const ITW_RESTORE_FILES = [
           'Mr_beans.jpg',
@@ -1388,8 +1384,7 @@
           'throw.jpg',
           'group_1.png',
           'happy-friends.jpg',
-          'get-out.jpg',
-          'whiplash.jpg',
+          'i-was-born-for-business_0.jpg',
           'group_black_1.jpg',
           'photographer.jpg',
           'two_1.jpg',
@@ -1400,18 +1395,19 @@
           'black-male.jpg',
           'always-smiling.jpg',
           'group_4.jpg',
+          'get-out.jpg',
+          'whiplash.jpg',
           'group_black_0.jpg',
           'alphabet.jpg',
           'woman_5.jpg',
-          'i-was-born-for-business_0.jpg',
         ]
 
         // --- ITW Refocus Logic ---
         let currentItwRefocusIndex = 0
-        const itwRefocusCtr = document.getElementById('itwRefocusCounter')
         const itwRefocusLayout = document.getElementById('itwRefocusLayout')
         const itwRefocusInput = document.getElementById('itwRefocusInput')
         const itwRefocusOutput = document.getElementById('itwRefocusOutput')
+        const itwRefocusBtnContainer = document.getElementById('itwRefocusCaseButtons')
 
         function updateItwRefocus() {
           if (ITW_REFOCUS_FILES.length === 0) return
@@ -1422,25 +1418,30 @@
           itwRefocusInput.src = inputSrc
           itwRefocusOutput.src = outputSrc
           itwRefocusLayout.src = outputSrc
-          
-          itwRefocusCtr.textContent = `Case ${currentItwRefocusIndex + 1} / ${ITW_REFOCUS_FILES.length}`
         }
 
-        document.getElementById('itwRefocusPrev').addEventListener('click', () => {
-          currentItwRefocusIndex = (currentItwRefocusIndex - 1 + ITW_REFOCUS_FILES.length) % ITW_REFOCUS_FILES.length
-          updateItwRefocus()
+        // 生成 ITW Refocus 按鈕
+        itwRefocusBtnContainer.innerHTML = '<span class="comp-label">Case:</span>';
+        ITW_REFOCUS_FILES.forEach((_, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (idx === currentItwRefocusIndex ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentItwRefocusIndex = idx
+            Array.from(itwRefocusBtnContainer.children).forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateItwRefocus()
+          }
+          itwRefocusBtnContainer.appendChild(btn)
         })
-        document.getElementById('itwRefocusNext').addEventListener('click', () => {
-          currentItwRefocusIndex = (currentItwRefocusIndex + 1) % ITW_REFOCUS_FILES.length
-          updateItwRefocus()
-        })
+
 
         // --- ITW Restore Logic ---
         let currentItwIndex = 0
-        const itwCtr = document.getElementById('itwCounter')
         const itwRestoreLayout = document.getElementById('itwRestoreLayout')
         const itwRestoreInput = document.getElementById('itwRestoreInput')
         const itwRestoreOutput = document.getElementById('itwRestoreOutput')
+        const itwRestoreBtnContainer = document.getElementById('itwRestoreCaseButtons')
 
         function updateItwRestore() {
           if (ITW_RESTORE_FILES.length === 0) return
@@ -1451,20 +1452,24 @@
           itwRestoreInput.src = inputSrc
           itwRestoreOutput.src = outputSrc
           itwRestoreLayout.src = outputSrc
-          
-          itwCtr.textContent = `Case ${currentItwIndex + 1} / ${ITW_RESTORE_FILES.length}`
         }
 
-        document.getElementById('itwPrev').addEventListener('click', () => {
-          currentItwIndex = (currentItwIndex - 1 + ITW_RESTORE_FILES.length) % ITW_RESTORE_FILES.length
-          updateItwRestore()
-        })
-        document.getElementById('itwNext').addEventListener('click', () => {
-          currentItwIndex = (currentItwIndex + 1) % ITW_RESTORE_FILES.length
-          updateItwRestore()
+        // 生成 ITW Restore 按鈕
+        itwRestoreBtnContainer.innerHTML = '<span class="comp-label">Case:</span>';
+        ITW_RESTORE_FILES.forEach((_, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (idx === currentItwIndex ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentItwIndex = idx
+            Array.from(itwRestoreBtnContainer.children).forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+            updateItwRestore()
+          }
+          itwRestoreBtnContainer.appendChild(btn)
         })
 
-        // --- Tab Switching ---
+        // --- Tab Switching (保持不變) ---
         const btnItwTabRestore = document.getElementById('btn-itw-restore')
         const btnItwTabRefocus = document.getElementById('btn-itw-refocus')
         const panelItwRestore = document.getElementById('panel-itw-restore')
@@ -1510,55 +1515,50 @@
           })
         })
         // ==========================================
-        // 12. Gemini 3 (Nano Banana Pro) Comparison
+        // 12. Gemini 3 (Nano Banana Pro) Comparison (Buttons Version)
         // ==========================================
         const GEMINI_FILES = [
           'fashion_1980.jpg',
           'black-male.jpg',
           'black_white_kiss.jpg',
-          'whiplash.jpg',
           'white_flower_red_dress.jpg',
           'kid.jpg'
         ]
         
         let currentGeminiIndex = 0
-        
         const geminiInputImg = document.getElementById('geminiInputImg')
         const geminiNanoImg = document.getElementById('geminiNanoImg')
         const geminiOursImg = document.getElementById('geminiOursImg')
-        const geminiCounter = document.getElementById('geminiCounter')
-        const geminiPrevBtn = document.getElementById('geminiPrev')
-        const geminiNextBtn = document.getElementById('geminiNext')
+        const geminiBtnContainer = document.getElementById('geminiCaseButtons')
 
-        // 設定圖片路徑，請依據你的資料夾結構修改這裡
         const GEMINI_BASE_PATH = 'static/gemini_comparison' 
 
         function updateGeminiComp() {
           if (GEMINI_FILES.length === 0) return
           const filename = GEMINI_FILES[currentGeminiIndex]
           
-          // 路徑假設：
-          // Input -> static/gemini_comparison/input/filename
-          // Nano  -> static/gemini_comparison/nano/filename
-          // Ours  -> static/gemini_comparison/ours/filename
           geminiInputImg.src = `${GEMINI_BASE_PATH}/input/${filename}`
           geminiNanoImg.src = `${GEMINI_BASE_PATH}/nanobanana/${filename}`
           geminiOursImg.src = `${GEMINI_BASE_PATH}/ours/${filename}`
-          
-          geminiCounter.textContent = `Case ${currentGeminiIndex + 1} / ${GEMINI_FILES.length}`
         }
 
-        if (geminiPrevBtn && geminiNextBtn) {
-          geminiPrevBtn.addEventListener('click', () => {
-            currentGeminiIndex = (currentGeminiIndex - 1 + GEMINI_FILES.length) % GEMINI_FILES.length
+        // 生成 Gemini 按鈕
+        geminiBtnContainer.innerHTML = '<span class="comp-label">Case:</span>';
+        GEMINI_FILES.forEach((_, idx) => {
+          const btn = document.createElement('button')
+          btn.className = 'comp-btn' + (idx === currentGeminiIndex ? ' active' : '')
+          btn.textContent = `Case ${idx + 1}`
+          btn.onclick = () => {
+            currentGeminiIndex = idx
+            Array.from(geminiBtnContainer.children).forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
             updateGeminiComp()
-          })
-          
-          geminiNextBtn.addEventListener('click', () => {
-            currentGeminiIndex = (currentGeminiIndex + 1) % GEMINI_FILES.length
-            updateGeminiComp()
-          })
-        }
+          }
+          geminiBtnContainer.appendChild(btn)
+        })
+
+        // 初始化
+        updateGeminiComp()
 
         // 初始化
         updateGeminiComp()
