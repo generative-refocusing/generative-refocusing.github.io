@@ -537,39 +537,53 @@
         </div>
 
         <div id="panel-wild-restore" class="wild-display-area active">
-          <div class="wild-container">
-            <button class="nav-arrow" id="wildPrev">&#10094;</button>
-            <div class="wild-side-by-side">
-              <div class="wild-img-box">
-                <img src="" alt="Input" id="wildInputImg" />
-                <div class="wild-label">Input</div>
-              </div>
-              <div class="wild-img-box">
-                <img src="" alt="Ours" id="wildOutputImg" />
-                <div class="wild-label">Ours</div>
-              </div>
+          <div class="comp-controls" style="margin-bottom: 15px;">
+            <div class="comp-row">
+              <button class="nav-arrow" id="wildPrev">&#10094;</button>
+              <span class="wild-counter" id="wildCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 10</span>
+              <button class="nav-arrow" id="wildNext">&#10095;</button>
             </div>
-            <button class="nav-arrow" id="wildNext">&#10095;</button>
           </div>
-          <div class="wild-counter" id="wildCounter">Case 1 / 1</div>
+          
+          <div class="slider-container" id="slider-wild-restore">
+            <img src="" alt="" class="slider-layout-img" id="wildRestoreLayout" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Input" id="wildRestoreInput" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="wildRestoreOutput" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left">Input</div>
+            <div class="slider-label right">Ours</div>
+          </div>
         </div>
 
         <div id="panel-wild-refocus" class="wild-display-area">
-          <div class="wild-container">
-            <button class="nav-arrow" id="wildRefocusPrev">&#10094;</button>
-            <div class="wild-side-by-side">
-              <div class="wild-img-box">
-                <img src="" alt="Input" id="wildRefocusInputImg" />
-                <div class="wild-label">Input</div>
-              </div>
-              <div class="wild-img-box">
-                <img src="" alt="Ours" id="wildRefocusOutputImg" />
-                <div class="wild-label">Ours</div>
-              </div>
+          <div class="comp-controls" style="margin-bottom: 15px;">
+            <div class="comp-row">
+              <button class="nav-arrow" id="wildRefocusPrev">&#10094;</button>
+              <span class="wild-counter" id="wildRefocusCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 10</span>
+              <button class="nav-arrow" id="wildRefocusNext">&#10095;</button>
             </div>
-            <button class="nav-arrow" id="wildRefocusNext">&#10095;</button>
           </div>
-          <div class="wild-counter" id="wildRefocusCounter">Case 1 / 1</div>
+
+          <div class="slider-container" id="slider-wild-refocus">
+            <img src="" alt="" class="slider-layout-img" id="wildRefocusLayout" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Input" id="wildRefocusInput" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="wildRefocusOutput" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left">Input</div>
+            <div class="slider-label right">Ours</div>
+          </div>
         </div>
       </div>
     </section>
@@ -584,39 +598,53 @@
         </div>
 
         <div id="panel-itw-restore" class="wild-display-area active">
-          <div class="wild-container">
-            <button class="nav-arrow" id="itwPrev">&#10094;</button>
-            <div class="wild-side-by-side">
-              <div class="wild-img-box">
-                <img src="" alt="Input" id="itwInputImg" />
-                <div class="wild-label">Input</div>
-              </div>
-              <div class="wild-img-box">
-                <img src="" alt="Ours" id="itwOutputImg" />
-                <div class="wild-label">Ours</div>
-              </div>
+          <div class="comp-controls" style="margin-bottom: 15px;">
+            <div class="comp-row">
+              <button class="nav-arrow" id="itwPrev">&#10094;</button>
+              <span class="wild-counter" id="itwCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 10</span>
+              <button class="nav-arrow" id="itwNext">&#10095;</button>
             </div>
-            <button class="nav-arrow" id="itwNext">&#10095;</button>
           </div>
-          <div class="wild-counter" id="itwCounter">Case 0 / 0</div>
+
+          <div class="slider-container" id="slider-itw-restore">
+            <img src="" alt="" class="slider-layout-img" id="itwRestoreLayout" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Input" id="itwRestoreInput" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="itwRestoreOutput" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left">Input</div>
+            <div class="slider-label right">Ours</div>
+          </div>
         </div>
 
         <div id="panel-itw-refocus" class="wild-display-area">
-          <div class="wild-container">
-            <button class="nav-arrow" id="itwRefocusPrev">&#10094;</button>
-            <div class="wild-side-by-side">
-              <div class="wild-img-box">
-                <img src="" alt="Input" id="itwRefocusInputImg" />
-                <div class="wild-label">Input</div>
-              </div>
-              <div class="wild-img-box">
-                <img src="" alt="Ours" id="itwRefocusOutputImg" />
-                <div class="wild-label">Ours</div>
-              </div>
+          <div class="comp-controls" style="margin-bottom: 15px;">
+            <div class="comp-row">
+              <button class="nav-arrow" id="itwRefocusPrev">&#10094;</button>
+              <span class="wild-counter" id="itwRefocusCounter" style="margin: 0 10px; font-weight:600; color:#555;">Case 1 / 20</span>
+              <button class="nav-arrow" id="itwRefocusNext">&#10095;</button>
             </div>
-            <button class="nav-arrow" id="itwRefocusNext">&#10095;</button>
           </div>
-          <div class="wild-counter" id="itwRefocusCounter">Case 1 / 6</div>
+
+          <div class="slider-container" id="slider-itw-refocus">
+            <img src="" alt="" class="slider-layout-img" id="itwRefocusLayout" />
+            <div class="slider-pane pane-left">
+              <img src="" alt="Input" id="itwRefocusInput" />
+            </div>
+            <div class="slider-pane pane-right">
+              <img src="" alt="Ours" id="itwRefocusOutput" />
+            </div>
+            <div class="slider-handle">
+              <div class="slider-handle-knob">&#9664;&#9654;</div>
+            </div>
+            <div class="slider-label left">Input</div>
+            <div class="slider-label right">Ours</div>
+          </div>
         </div>
       </div>
     </section>
@@ -918,14 +946,15 @@
 
       document.addEventListener('DOMContentLoaded', function () {
         // ... (Logics retained)
-        // 1. Historical Logic
+       // ==========================================
+        // 1. Historical Logic (Slider Version)
+        // ==========================================
         const WILD_FILES = [
           'apollo11_shake_hand.jpg',
           'Dianna.jpg',
           'Colored (6).jpg',
           'Colored (1).jpg',
           'comandante-ernesto-che-guevara.jpg',
-          'kid.png',
           'albert-einstein-and-charlie-chaplin.jpg',
           'wweii_nurse.jpg',
           'family.jpg',
@@ -933,88 +962,82 @@
           'queen_black.jpg',
         ]
         let currentWildIndex = 0
-        let autoPlayInterval = null
-        const AUTO_PLAY_DELAY = 10000
-        const wildInputImg = document.getElementById('wildInputImg')
-        const wildOutputImg = document.getElementById('wildOutputImg')
         const wildCounter = document.getElementById('wildCounter')
-        const btnPrev = document.getElementById('wildPrev')
-        const btnNext = document.getElementById('wildNext')
+        const wildRestoreLayout = document.getElementById('wildRestoreLayout')
+        const wildRestoreInput = document.getElementById('wildRestoreInput')
+        const wildRestoreOutput = document.getElementById('wildRestoreOutput')
 
         function updateWild() {
           if (WILD_FILES.length === 0) return
           const filename = WILD_FILES[currentWildIndex]
-          wildInputImg.src = `static/Historical/AIF/input/${filename}`
-          wildOutputImg.src = `static/Historical/AIF/output/${filename}`
+          const inputSrc = `static/Historical/AIF/input/${filename}`
+          const outputSrc = `static/Historical/AIF/output/${filename}`
+          
+          // Slider 需要更新三張圖：Layout(撐開高度), Left(左), Right(右)
+          wildRestoreInput.src = inputSrc
+          wildRestoreOutput.src = outputSrc
+          wildRestoreLayout.src = outputSrc // 使用 Output 來撐開 Layout 較保險
+          
           wildCounter.textContent = `Case ${currentWildIndex + 1} / ${WILD_FILES.length}`
         }
-        function nextWild() {
-          currentWildIndex = (currentWildIndex + 1) % WILD_FILES.length
-          updateWild()
-        }
-        function prevWild() {
-          currentWildIndex = (currentWildIndex - 1 + WILD_FILES.length) % WILD_FILES.length
-          updateWild()
-        }
-        function startAutoPlay() {
-          if (autoPlayInterval) clearInterval(autoPlayInterval)
-          autoPlayInterval = setInterval(nextWild, AUTO_PLAY_DELAY)
-        }
+        
+        document.getElementById('wildPrev').addEventListener('click', () => {
+            currentWildIndex = (currentWildIndex - 1 + WILD_FILES.length) % WILD_FILES.length
+            updateWild()
+        })
+        document.getElementById('wildNext').addEventListener('click', () => {
+            currentWildIndex = (currentWildIndex + 1) % WILD_FILES.length
+            updateWild()
+        })
+        
+        updateWild()
+        setupSlider('slider-wild-restore') // 初始化 Slider
 
-        if (btnPrev) {
-          btnPrev.addEventListener('click', () => {
-            prevWild()
-            // startAutoPlay()
-          })
-          btnNext.addEventListener('click', () => {
-            nextWild()
-            // startAutoPlay()
-          })
-        }
-        if (WILD_FILES.length > 0) {
-          updateWild()
-          // startAutoPlay()
-        }
-
-        // 2. Refocus Wild
+        // ==========================================
+        // 2. Refocus Wild (Slider Version)
+        // ==========================================
         const REFOCUS_WILD_FILES = [
+          'kid.png',
           'black_white_kiss.png',
           'fashion_1980.jpg',
           'apollo11_shake_hand.jpg',
-          'kid.png',
           'beach.png',
           'C0tvR1ZWIAER4dB_image.png',
-          'Che-sensibilidad1.png',
+          'Che-Guevara.png',
+          'historic-photos-colorization-21_cp.png',
           'edison.png',
           '25807218721_bf0f777e36_b.png',
         ]
         let currentRefocusWildIndex = 0
-        const wildRefocusInputImg = document.getElementById('wildRefocusInputImg')
-        const wildRefocusOutputImg = document.getElementById('wildRefocusOutputImg')
         const wildRefocusCounter = document.getElementById('wildRefocusCounter')
-        const btnRefocusPrev = document.getElementById('wildRefocusPrev')
-        const btnRefocusNext = document.getElementById('wildRefocusNext')
+        const wildRefocusLayout = document.getElementById('wildRefocusLayout')
+        const wildRefocusInput = document.getElementById('wildRefocusInput')
+        const wildRefocusOutput = document.getElementById('wildRefocusOutput')
 
         function updateRefocusWild() {
           if (REFOCUS_WILD_FILES.length === 0) return
           const filename = REFOCUS_WILD_FILES[currentRefocusWildIndex]
-          wildRefocusInputImg.src = `static/Historical/Refocus/input/${filename}`
-          wildRefocusOutputImg.src = `static/Historical/Refocus/output/${filename}`
+          const inputSrc = `static/Historical/Refocus/input/${filename}`
+          const outputSrc = `static/Historical/Refocus/output/${filename}`
+          
+          wildRefocusInput.src = inputSrc
+          wildRefocusOutput.src = outputSrc
+          wildRefocusLayout.src = outputSrc
+          
           wildRefocusCounter.textContent = `Case ${currentRefocusWildIndex + 1} / ${REFOCUS_WILD_FILES.length}`
         }
-        if (btnRefocusPrev) {
-          btnRefocusPrev.addEventListener('click', () => {
-            currentRefocusWildIndex =
-              (currentRefocusWildIndex - 1 + REFOCUS_WILD_FILES.length) % REFOCUS_WILD_FILES.length
-            updateRefocusWild()
-          })
-          btnRefocusNext.addEventListener('click', () => {
-            currentRefocusWildIndex = (currentRefocusWildIndex + 1) % REFOCUS_WILD_FILES.length
-            updateRefocusWild()
-          })
-        }
-        if (REFOCUS_WILD_FILES.length > 0) updateRefocusWild()
 
+        document.getElementById('wildRefocusPrev').addEventListener('click', () => {
+          currentRefocusWildIndex = (currentRefocusWildIndex - 1 + REFOCUS_WILD_FILES.length) % REFOCUS_WILD_FILES.length
+          updateRefocusWild()
+        })
+        document.getElementById('wildRefocusNext').addEventListener('click', () => {
+          currentRefocusWildIndex = (currentRefocusWildIndex + 1) % REFOCUS_WILD_FILES.length
+          updateRefocusWild()
+        })
+        
+        updateRefocusWild()
+        setupSlider('slider-wild-refocus') // 初始化 Slider
         // 3. Deblur Comp
         const DEBLUR_CASES = [
           'case_4',
@@ -1345,22 +1368,25 @@
           wildRefocusPanel.classList.add('active')
         })
 
-        // 10. Tab Switching Logic (ITW)
+        // ==========================================
+        // 10. Tab Switching Logic (ITW) & Sliders
+        // ==========================================
         const ITW_RESTORE_FILES = [
           'Mr_beans.jpg',
-          'photographer_1.jpg',
+          'yellow_flower_girl.jpg',
           'reflect.jpg',
           'two.jpg',
           'high_angle_people.jpg',
-          'yellow_flower_girl.jpg',
-          'toy-bricks.jpg',
           'happy-girl-friends.jpg',
           'kovil.jpg',
+          'pretender.png',
           'reflect_1.jpg',
+          'photographer_1.jpg',
         ]
         const ITW_REFOCUS_FILES = [
           'white_flower_red_dress.png',
           'throw.jpg',
+          'group_1.png',
           'happy-friends.jpg',
           'get-out.jpg',
           'whiplash.jpg',
@@ -1379,73 +1405,66 @@
           'woman_5.jpg',
           'i-was-born-for-business_0.jpg',
         ]
-        let itwRestoreInterval = null
-        let itwRefocusInterval = null
 
+        // --- ITW Refocus Logic ---
         let currentItwRefocusIndex = 0
-        const itwRefocusInput = document.getElementById('itwRefocusInputImg')
-        const itwRefocusOutput = document.getElementById('itwRefocusOutputImg')
         const itwRefocusCtr = document.getElementById('itwRefocusCounter')
+        const itwRefocusLayout = document.getElementById('itwRefocusLayout')
+        const itwRefocusInput = document.getElementById('itwRefocusInput')
+        const itwRefocusOutput = document.getElementById('itwRefocusOutput')
+
         function updateItwRefocus() {
           if (ITW_REFOCUS_FILES.length === 0) return
           const f = ITW_REFOCUS_FILES[currentItwRefocusIndex]
-          itwRefocusInput.src = `static/in-the-wild/Refocusing/input/${f}`
-          itwRefocusOutput.src = `static/in-the-wild/Refocusing/output/${f}`
+          const inputSrc = `static/in-the-wild/Refocusing/input/${f}`
+          const outputSrc = `static/in-the-wild/Refocusing/output/${f}`
+          
+          itwRefocusInput.src = inputSrc
+          itwRefocusOutput.src = outputSrc
+          itwRefocusLayout.src = outputSrc
+          
           itwRefocusCtr.textContent = `Case ${currentItwRefocusIndex + 1} / ${ITW_REFOCUS_FILES.length}`
         }
-        function nextItwRefocus() {
-          currentItwRefocusIndex = (currentItwRefocusIndex + 1) % ITW_REFOCUS_FILES.length
-          updateItwRefocus()
-        }
-        function prevItwRefocus() {
+
+        document.getElementById('itwRefocusPrev').addEventListener('click', () => {
           currentItwRefocusIndex = (currentItwRefocusIndex - 1 + ITW_REFOCUS_FILES.length) % ITW_REFOCUS_FILES.length
           updateItwRefocus()
-        }
-        function startItwRefocusAutoPlay() {
-          if (itwRefocusInterval) clearInterval(itwRefocusInterval)
-          itwRefocusInterval = setInterval(nextItwRefocus, AUTO_PLAY_DELAY)
-        }
-        document.getElementById('itwRefocusPrev').addEventListener('click', () => {
-          prevItwRefocus()
-          // startItwRefocusAutoPlay()
         })
         document.getElementById('itwRefocusNext').addEventListener('click', () => {
-          nextItwRefocus()
-          // startItwRefocusAutoPlay()
+          currentItwRefocusIndex = (currentItwRefocusIndex + 1) % ITW_REFOCUS_FILES.length
+          updateItwRefocus()
         })
 
+        // --- ITW Restore Logic ---
         let currentItwIndex = 0
-        const itwInput = document.getElementById('itwInputImg')
-        const itwOutput = document.getElementById('itwOutputImg')
         const itwCtr = document.getElementById('itwCounter')
+        const itwRestoreLayout = document.getElementById('itwRestoreLayout')
+        const itwRestoreInput = document.getElementById('itwRestoreInput')
+        const itwRestoreOutput = document.getElementById('itwRestoreOutput')
+
         function updateItwRestore() {
           if (ITW_RESTORE_FILES.length === 0) return
           const f = ITW_RESTORE_FILES[currentItwIndex]
-          itwInput.src = `static/in-the-wild/AIF/input/${f}`
-          itwOutput.src = `static/in-the-wild/AIF/output/${f}`
+          const inputSrc = `static/in-the-wild/AIF/input/${f}`
+          const outputSrc = `static/in-the-wild/AIF/output/${f}`
+          
+          itwRestoreInput.src = inputSrc
+          itwRestoreOutput.src = outputSrc
+          itwRestoreLayout.src = outputSrc
+          
           itwCtr.textContent = `Case ${currentItwIndex + 1} / ${ITW_RESTORE_FILES.length}`
         }
-        function nextItwRestore() {
-          currentItwIndex = (currentItwIndex + 1) % ITW_RESTORE_FILES.length
-          updateItwRestore()
-        }
-        function prevItwRestore() {
+
+        document.getElementById('itwPrev').addEventListener('click', () => {
           currentItwIndex = (currentItwIndex - 1 + ITW_RESTORE_FILES.length) % ITW_RESTORE_FILES.length
           updateItwRestore()
-        }
-        function startItwRestoreAutoPlay() {
-          if (itwRestoreInterval) clearInterval(itwRestoreInterval)
-          itwRestoreInterval = setInterval(nextItwRestore, AUTO_PLAY_DELAY)
-        }
-        document.getElementById('itwPrev').addEventListener('click', () => {
-          prevItwRestore()
-          // startItwRestoreAutoPlay()
         })
         document.getElementById('itwNext').addEventListener('click', () => {
-          nextItwRestore()
-          // startItwRestoreAutoPlay()
+          currentItwIndex = (currentItwIndex + 1) % ITW_RESTORE_FILES.length
+          updateItwRestore()
         })
 
+        // --- Tab Switching ---
         const btnItwTabRestore = document.getElementById('btn-itw-restore')
         const btnItwTabRefocus = document.getElementById('btn-itw-refocus')
         const panelItwRestore = document.getElementById('panel-itw-restore')
@@ -1456,28 +1475,22 @@
           btnItwTabRefocus.classList.remove('active')
           panelItwRestore.classList.add('active')
           panelItwRefocus.classList.remove('active')
-          if (ITW_RESTORE_FILES.length > 0) {
-            updateItwRestore()
-            // startItwRestoreAutoPlay()
-          }
-          if (itwRefocusInterval) clearInterval(itwRefocusInterval)
+          updateItwRestore()
         })
         btnItwTabRefocus.addEventListener('click', () => {
           btnItwTabRefocus.classList.add('active')
           btnItwTabRestore.classList.remove('active')
           panelItwRestore.classList.remove('active')
           panelItwRefocus.classList.add('active')
-          if (ITW_REFOCUS_FILES.length > 0) {
-            updateItwRefocus()
-            // startItwRefocusAutoPlay()
-          }
-          if (itwRestoreInterval) clearInterval(itwRestoreInterval)
+          updateItwRefocus()
         })
 
-        if (ITW_RESTORE_FILES.length > 0) {
-          updateItwRestore()
-          // startItwRestoreAutoPlay()
-        }
+        // Initial Calls
+        if (ITW_RESTORE_FILES.length > 0) updateItwRestore()
+        if (ITW_REFOCUS_FILES.length > 0) updateItwRefocus()
+        
+        setupSlider('slider-itw-restore')
+        setupSlider('slider-itw-refocus')
 
         // 11. Comparison Task Tabs
         const taskButtons = document.querySelectorAll('.task-btn[data-task]')
