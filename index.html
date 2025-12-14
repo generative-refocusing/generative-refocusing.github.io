@@ -7,8 +7,8 @@
     <link rel="icon" type="image/png" href="static/icon.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-    <link rel="stylesheet" href="./static/css/index.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/css/bulma-carousel.min.css">
     <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
 
     <style>
@@ -286,6 +286,15 @@
         cursor: ew-resize;
         user-select: none;
       }
+      /* Failure row 是 flex layout，取消 slider-container 的 auto margin，避免跑偏 */
+      .failure-row .failure-slider-box {
+        margin: 0 !important;
+      }
+
+      /* 保險：如果你未來也把其他 slider 放進 flex row，一起保護 */
+      .failure-row .slider-container {
+        margin: 0 !important;
+      }
 
       .slider-layout-img {
         display: block;
@@ -526,7 +535,101 @@
         vertical-align: super;
         font-size: smaller;
       }
+      /* ====== Carousel 完整版 CSS ====== */
+    .carousel-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      overflow: hidden;
+      padding: 0 40px; /* 留空間給箭頭 */
+      box-sizing: border-box;
+    }
+
+    .carousel-track-container {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .carousel-track {
+      display: flex;
+      padding: 0;
+      margin: 0;
+      list-style: none;
       
+      /* ❌ 刪除這一行！不要在 CSS 裡寫 transition */
+      /* transition: transform 0.4s ease-in-out; */
+    }
+
+    .carousel-slide {
+      /* 關鍵：設定寬度為 1/3 */
+      min-width: 33.3333%;
+      box-sizing: border-box;
+      padding: 0 5px; /* 影片間距 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .carousel-slide video {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* 按鈕與圓點樣式 */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .carousel-btn:hover { background: #fff; }
+    .carousel-btn.prev-btn { left: 0; }
+    .carousel-btn.next-btn { right: 0; }
+
+    .carousel-nav {
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+      gap: 8px;
+    }
+
+    .carousel-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid #999;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0;
+      margin: 0;
+      appearance: none;
+      flex-shrink: 0;
+    }
+    .carousel-dot.active {
+      background-color: #333;
+      border-color: #333;
+      transform: scale(1.2);
+    }
+
+    .section.is-light .hero-body {
+      padding-top: 1rem;    /* 上方留白減半 */
+      padding-bottom: 1rem; /* 下方留白減半 */
+    }
     </style>
   </head>
   <body>
@@ -589,8 +692,98 @@
       </div>
     </div>
     </section>
-
     <section class="section is-light">
+      <div class="hero-body">
+        <div class="container">
+          <div class="carousel-wrapper">
+            <button class="carousel-btn prev-btn">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          
+            <div class="carousel-track-container">
+              <ul class="carousel-track" id="track">
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/white_flower_red_dress_k_30_right_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/cello_k_40_right_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/female_k_20_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/group_1_k_150_right_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/happy-girl-friends_varK_max60_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/i-was-born-for-business_k_70_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/joker_0_k_200_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/kid_k_20_right_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/black-male_k_55_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/Mr_beans_varK_max40_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/throw_k_10_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+                <li class="carousel-slide">
+                  <video poster="" autoplay controls muted loop playsinline>
+                    <source src="static/video/kiss_varK_max35_left_corner.mp4" type="video/mp4">
+                  </video>
+                </li>
+              </ul>
+            </div>
+          
+            <button class="carousel-btn next-btn">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          
+            <div class="carousel-nav" id="carouselNav"></div>
+          </div>
+    
+          </div>
+        </div>
+        
+        <div class="columns is-centered has-text-centered" style="text-align: center;">  
+          <p>
+            We demonstrate flexible <b>refocusing</b> and <b>aperture adjustment</b> effects from a single image.<br/>
+            The heatmap overlay visualizes the synthesized defocus map (CoC size).
+          </p> 
+        </div>
+      </div>
+    </section>
+    <section class="section is-white">
       <div class="container">
         <h2 class="section-title">Historical Images</h2>
 
@@ -645,7 +838,7 @@
       </div>
     </section>
 
-    <section class="section is-white">
+    <section class="section is-light">
       <div class="container">
         <h2 class="section-title">In-the-wild Images</h2>
 
@@ -700,7 +893,7 @@
       </div>
     </section>
 
-    <section class="section is-light">
+    <section class="section is-white">
       <div class="container">
         <h2 class="section-title">Interactive Refocusing</h2>
 
@@ -747,7 +940,7 @@
       </div>
     </section>
 
-    <section class="section is-white">
+    <section class="section is-light">
       <div class="container is-wider">
         <h2 class="section-title">Comparison with Gemini 3 (Nano Banana Pro)</h2>
 
@@ -1657,5 +1850,120 @@
         updateGeminiComp()
       })
     </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const track = document.getElementById('track');
+        const originalSlides = Array.from(track.children);
+        const nextBtn = document.querySelector('.next-btn');
+        const prevBtn = document.querySelector('.prev-btn');
+        const dotsNav = document.getElementById('carouselNav');
+    
+        const slideToShow = 3;
+        const totalOriginal = originalSlides.length;
+        let currentIndex = slideToShow; 
+        let isTransitioning = false;
+    
+        // 1. 製作 Clone
+        const clonesStart = originalSlides.slice(-slideToShow).map(s => s.cloneNode(true));
+        const clonesEnd = originalSlides.slice(0, slideToShow).map(s => s.cloneNode(true));
+    
+        // ✅ 用 prepend 保持順序（不會反轉）
+        clonesStart.forEach(clone => clone.classList.add('clone'));
+        track.prepend(...clonesStart);
+
+        clonesEnd.forEach(clone => clone.classList.add('clone'));
+        track.append(...clonesEnd);
+    
+        // 2. 製作圓點
+        originalSlides.forEach((_, index) => {
+          const dot = document.createElement('button');
+          dot.classList.add('carousel-dot');
+          if (index === 0) dot.classList.add('active');
+          dot.addEventListener('click', () => {
+            if (isTransitioning) return;
+            currentIndex = index + slideToShow;
+            updateCarousel(true);
+          });
+          dotsNav.appendChild(dot);
+        });
+        const dots = Array.from(dotsNav.children);
+    
+        // 3. 更新位置函式 (加強版)
+        const updateCarousel = (animate = true) => {
+          if (animate) {
+            track.style.transition = 'transform 0.4s ease-in-out';
+            isTransitioning = true;
+          } else {
+            // === 關鍵修正：確保動畫完全關閉 ===
+            track.style.transition = 'none';
+            isTransitioning = false;
+          }
+    
+          const translateValue = currentIndex * (100 / slideToShow);
+          track.style.transform = `translateX(-${translateValue}%)`;
+    
+          // === 關鍵修正：強制瀏覽器重繪 (Reflow) ===
+          // 這行能確保瀏覽器「立刻」套用上面的 transition: none，
+          // 而不是把這次移動誤認為動畫的一部分。
+          if (!animate) void track.offsetWidth;
+    
+          updateDots();
+        };
+    
+        const updateDots = () => {
+          const realIndex = (currentIndex - slideToShow + totalOriginal) % totalOriginal;
+          dots.forEach(d => d.classList.remove('active'));
+          dots[realIndex]?.classList.add('active');
+        };
+
+    
+        // 4. 按鈕事件
+        nextBtn.addEventListener('click', () => {
+          if (isTransitioning) return;
+          currentIndex++;
+          updateCarousel(true);
+        });
+    
+        prevBtn.addEventListener('click', () => {
+          if (isTransitioning) return;
+          currentIndex--;
+          updateCarousel(true);
+        });
+    
+        // 5. 監聽動畫結束 (無縫循環)
+        track.addEventListener('transitionend', () => {
+          // 只有在真的做完動畫後才檢查是否需要瞬移
+          if (!isTransitioning) return;
+          
+          let needTeleport = false;
+    
+          // 判斷是否到了 Clone 區
+          if (currentIndex >= totalOriginal + slideToShow) {
+            currentIndex = slideToShow;
+            needTeleport = true;
+          } else if (currentIndex < slideToShow) {
+            // 修正：原本邏輯沒錯，但加上 setTimeout 更保險
+            currentIndex = totalOriginal + currentIndex; 
+            needTeleport = true;
+          }
+    
+          // 如果需要瞬移，用 setTimeout 把動作排到下一個執行序列
+          // 這能有效防止「快速跳回」的閃爍
+          if (needTeleport) {
+            isTransitioning = false; // 先解鎖
+            setTimeout(() => {
+              updateCarousel(false); // 執行無動畫瞬移
+            }, 0);
+          } else {
+            isTransitioning = false; // 正常結束
+          }
+        });
+    
+        // 初始化：瞬間定位到起點
+        updateCarousel(false);
+      });
+    </script>
+    
+
   </body>
 </html>
