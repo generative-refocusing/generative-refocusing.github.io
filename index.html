@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Generative Refocusing: Flexible Defocus Control from a Single Image</title>
     <link rel="icon" type="image/png" href="static/icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
 
     <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
 
@@ -115,6 +118,42 @@
         background: #363636;
         color: #fff;
         border-color: #363636;
+      }
+      /* ====== 按鈕區塊樣式 ====== */
+      .publication-links {
+        display: flex;
+        justify-content: center; /* 水平置中 */
+        gap: 12px;               /* 按鈕間距 */
+        margin-top: 20px;        /* 與上方學校名稱的距離 */
+        margin-bottom: 20px;     /* 與下方內容的距離 */
+      }
+
+      .link-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #363636; /* 深灰/黑色背景 */
+        color: #fff !important;    /* 強制白色文字 */
+        
+        height: 40px;              /* 按鈕高度 */
+        padding: 0 20px;           /* 左右留白 */
+        border-radius: 9999px;     /* 膠囊狀圓角 */
+        
+        text-decoration: none;
+        font-family: 'Google Sans', sans-serif;
+        font-weight: 500;
+        font-size: 16px;
+        transition: background-color 0.2s ease;
+      }
+
+      .link-btn:hover {
+        background-color: #5a5a5a; /* 滑鼠移過去變淺一點 */
+      }
+
+      /* 圖示樣式設定 */
+      .icon-size {
+        font-size: 20px;   /* 圖示大小 */
+        margin-right: 8px; /* 圖示與文字的距離 */
       }
 
       /* ====== Wild Section (Image Display) ====== */
@@ -487,6 +526,7 @@
         vertical-align: super;
         font-size: smaller;
       }
+      
     </style>
   </head>
   <body>
@@ -523,8 +563,31 @@
             <sup>2</sup>University of Maryland, College Park
           </span>
         </div>
+
+        <div class="publication-links">
+  
+          <a href="https://arxiv.org/abs/YOUR_PAPER_ID" target="_blank" class="link-btn">
+            <i class="ai ai-arxiv icon-size"></i>
+            arXiv
+          </a>
+        
+          <a href="https://youtu.be/YOUR_VIDEO_ID" target="_blank" class="link-btn">
+            <i class="fab fa-youtube icon-size"></i>
+            Video
+          </a>
+          <a href="https://huggingface.co/spaces/YOUR_SPACE" target="_blank" class="link-btn">
+            <span class="icon-size">🤗</span>
+            Demo
+          </a>
+          <a href="https://github.com/YOUR_REPO" target="_blank" class="link-btn">
+            <i class="fab fa-github icon-size"></i>
+            Code (Coming Soon)
+          </a>
+          
+        </div>
+
       </div>
-      </div>
+    </div>
     </section>
 
     <section class="section is-light">
