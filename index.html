@@ -780,6 +780,25 @@
       </div>
     </section>
 
+    <section class="section is-white">
+      <div class="container is-wider">
+        <h2 class="section-title">Method</h2>
+        
+        <div class="description-text" style="max-width: 1200px; margin: 0 auto 30px auto; text-align: justify; font-size: 1.1rem;">
+          Our method decomposes single-image refocusing into two stages: <b>(a) Defocus Deblurring</b> and <b>(b) Shallow Depth-of-Field Synthesis</b>. 
+          Given a blurry input image <i>I</i><sub>in</sub>, we optionally apply a pre-deblurring method [DRBNet] to obtain a conservative estimate <i>I</i><sub>syn</sub>, 
+          then feed both <i>I</i><sub>in</sub> and <i>I</i><sub>syn</sub> into DeblurNet to recover a high-quality all-in-focus image <i>I</i><sub>aif</sub>. 
+          In the second stage, BokehNet takes the all-in-focus image <i>I</i><sub>aif</sub>, the defocus map <i>D</i><sub>def</sub>, 
+          and optionally a specific aperture shape as inputs to synthesize the refocused output.
+        </div>
+
+        <div class="image-container" style="background: transparent; max-width: 1200px; margin: 0 auto;">
+          <img src="static/pipeline.svg" alt="Method Pipeline" style="width: 100%; height: auto;" />
+        </div>
+      </div>
+    </section>
+
+
     <section class="section is-light">
       <div class="container">
         <h2 class="section-title">Visual Comparison</h2>
