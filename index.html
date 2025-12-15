@@ -984,7 +984,7 @@
         
         <div class="description-text" style="max-width: 1200px; margin: 0 auto 30px auto; text-align: justify; font-size: 1.2rem;">
           Our method decomposes single-image refocusing into two stages: <b>(a) Defocus Deblurring</b> and <b>(b) Shallow Depth-of-Field Synthesis</b>. 
-          Given a blurry input image <b>I</b><sub>in</sub>, we optionally apply a pre-deblurring method [DRBNet] to obtain a conservative estimate <b>I</b><sub>syn</sub>, 
+          Given a blurry input image <b>I</b><sub>in</sub>, we optionally apply a pre-deblurring to obtain a conservative estimate <b>I</b><sub>syn</sub>, 
           then feed both <b>I</b><sub>in</sub> and <b>I</b><sub>syn</sub> into DeblurNet to recover a high-quality all-in-focus image <b>I</b><sub>aif</sub>. 
           In the second stage, BokehNet takes the all-in-focus image <b>I</b><sub>aif</sub>, the defocus map <b>D</b><sub>def</sub>, 
           and optionally a specific aperture shape as inputs to synthesize the refocused output.
