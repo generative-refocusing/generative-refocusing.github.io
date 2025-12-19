@@ -631,11 +631,37 @@
       padding-bottom: 1rem; /* 下方留白減半 */
     }
     @media screen and (max-width: 768px) {
-      .carousel-slide {
-        min-width: 100% !important; 
-        padding: 0 10px; 
-      }
+    .section {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
     }
+
+    
+    .carousel-wrapper {
+      padding: 0 !important; 
+    }
+
+    .carousel-slide {
+      min-width: 100% !important;
+      padding: 0 !important;
+    }
+
+    .carousel-slide video {
+      width: 100% !important;
+      border-radius: 4px; 
+      box-shadow: none;   
+    }
+
+   
+    .carousel-btn {
+      width: 32px;  
+      height: 32px;
+      background: rgba(255, 255, 255, 0.6);
+      font-size: 14px; 
+    }
+    .carousel-btn.prev-btn { left: 5px; }
+    .carousel-btn.next-btn { right: 5px; }
+  }
     </style>
   </head>
   <body>
