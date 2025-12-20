@@ -128,16 +128,17 @@
         margin-bottom: 20px;     /* 與下方內容的距離 */
       }
 
+      /* --- 按鈕本體 (保持不變) --- */
       .link-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background-color: #363636; /* 深灰/黑色背景 */
-        color: #fff !important;    /* 強制白色文字 */
+        background-color: #363636;
+        color: #fff !important;
         
-        height: 40px;              /* 按鈕高度 */
-        padding: 0 20px;           /* 左右留白 */
-        border-radius: 9999px;     /* 膠囊狀圓角 */
+        height: 40px;
+        padding: 0 20px;
+        border-radius: 9999px;
         
         text-decoration: none;
         font-family: 'Google Sans', sans-serif;
@@ -147,13 +148,32 @@
       }
 
       .link-btn:hover {
-        background-color: #5a5a5a; /* 滑鼠移過去變淺一點 */
+        background-color: #5a5a5a;
       }
 
-      /* 圖示樣式設定 */
+      /* --- 修改這裡：讓圖示和圖片樣式統一 --- */
       .icon-size {
-        font-size: 20px;   /* 圖示大小 */
-        margin-right: 8px; /* 圖示與文字的距離 */
+        /* 1. 設定文字圖示大小 */
+        font-size: 20px;   
+        
+        /* 2. 強制設定容器寬高 (這對 img 非常重要) */
+        width: 20px;       
+        height: 20px;
+        
+        /* 3. 對齊修正 (解決圖片飄移的關鍵) */
+        display: inline-flex;    /* 使用 flex 讓內部元素置中 */
+        align-items: center;     /* 垂直置中 */
+        justify-content: center; /* 水平置中 */
+        
+        /* 4. 圖片專用設定 (不會影響 font icon) */
+        object-fit: contain;     /* 確保圖片縮放不變形 */
+        margin-right: 8px;       /* 維持原本的間距 */
+      }
+      .icon-lg {
+        width: 24px;   /* 覆蓋原本的 20px */
+        height: 24px;  /* 覆蓋原本的 20px */
+        /* 如果這個 class 有機會用到 font icon (<i>) 上，加上下面這行 */
+        font-size: 24px; 
       }
 
       /* ====== Wild Section (Image Display) ====== */
@@ -749,8 +769,8 @@
             <i class="fab fa-youtube icon-size"></i>
             Video
           </a>
-          <a href="https://huggingface.co/spaces/nycu-cplab/Genfocus-Demo" target="_blank" class="link-btn">
-            <span class="icon-size">🤗</span>
+          <a href="..." target="_blank" class="link-btn">
+            <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="HF" class="icon-size icon-lg">
             Demo
           </a>
           <a href="https://github.com/rayray9999/Genfocus" target="_blank" class="link-btn">
