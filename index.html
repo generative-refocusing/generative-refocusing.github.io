@@ -98,11 +98,11 @@
       }
 
       .task-btn {
-        padding: 8px 24px; /* 稍微增加左右內距以適應較大文字 */
+        padding: 8px 24px; 
         border-radius: 999px;
         border: 1px solid #dbdbdb;
         background: #fff;
-        font-size: 16px; /* 修改：14px -> 16px */
+        font-size: 16px;
         font-weight: 500;
         cursor: pointer;
         color: #363636;
@@ -119,16 +119,16 @@
         color: #fff;
         border-color: #363636;
       }
-      /* ====== 按鈕區塊樣式 ====== */
+     
       .publication-links {
         display: flex;
-        justify-content: center; /* 水平置中 */
-        gap: 12px;               /* 按鈕間距 */
-        margin-top: 20px;        /* 與上方學校名稱的距離 */
-        margin-bottom: 20px;     /* 與下方內容的距離 */
+        justify-content: center; 
+        gap: 12px;              
+        margin-top: 20px;        
+        margin-bottom: 20px;     
       }
 
-      /* --- 按鈕本體 (保持不變) --- */
+     
       .link-btn {
         display: inline-flex;
         align-items: center;
@@ -151,28 +151,28 @@
         background-color: #5a5a5a;
       }
 
-      /* --- 修改這裡：讓圖示和圖片樣式統一 --- */
+      
       .icon-size {
-        /* 1. 設定文字圖示大小 */
+        
         font-size: 20px;   
         
-        /* 2. 強制設定容器寬高 (這對 img 非常重要) */
+       
         width: 20px;       
         height: 20px;
         
-        /* 3. 對齊修正 (解決圖片飄移的關鍵) */
-        display: inline-flex;    /* 使用 flex 讓內部元素置中 */
-        align-items: center;     /* 垂直置中 */
-        justify-content: center; /* 水平置中 */
         
-        /* 4. 圖片專用設定 (不會影響 font icon) */
-        object-fit: contain;     /* 確保圖片縮放不變形 */
-        margin-right: 8px;       /* 維持原本的間距 */
+        display: inline-flex;    
+        align-items: center;     
+        justify-content: center; 
+        
+        
+        object-fit: contain;     
+        margin-right: 8px;      
       }
       .icon-lg {
-        width: 24px;   /* 覆蓋原本的 20px */
-        height: 24px;  /* 覆蓋原本的 20px */
-        /* 如果這個 class 有機會用到 font icon (<i>) 上，加上下面這行 */
+        width: 24px;   
+        height: 24px;  
+        
         font-size: 24px; 
       }
 
@@ -1083,10 +1083,9 @@
         
         <div class="description-text" style="max-width: 1200px; margin: 0 auto 30px auto; text-align: justify; font-size: 1.2rem;">
           Our method decomposes single-image refocusing into two stages: <b>(a) Defocus Deblurring</b> and <b>(b) Shallow Depth-of-Field Synthesis</b>. 
-          Given a blurry input image <b>I</b><sub>in</sub>, we optionally apply a pre-deblurring to obtain a conservative estimate <b>I</b><sub>syn</sub>, 
-          then feed both <b>I</b><sub>in</sub> and <b>I</b><sub>syn</sub> into DeblurNet to recover a high-quality all-in-focus image <b>I</b><sub>aif</sub>. 
+          Given a blurry input image <b>I</b><sub>in</sub>, DeblurNet restores a high-quality all-in-focus image <b>I</b><sub>aif</sub>. 
           In the second stage, BokehNet takes the all-in-focus image <b>I</b><sub>aif</sub>, the defocus map <b>D</b><sub>def</sub>, 
-          and optionally a specific aperture shape as inputs to synthesize the refocused output.
+          and optionally a specific aperture shape <b>A</b> as inputs to synthesize the refocused output <b>I</b><sub>out</sub>.
         </div>
 
         <div class="image-container" style="background: transparent; max-width: 1200px; margin: 0 auto;">
@@ -1180,107 +1179,6 @@
             <div class="slider-label right">Ours</div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section is-white">
-      <div class="container">
-        <h2 class="section-title">Visual Comparison for BokehNet Training Ablation</h2>
-        <div class="description-text" style="font-size: 1.2rem;">
-          Training solely on synthetic data tends to result in an incorrect depth scale, leading to excessive bokeh
-          strength and noticeable artifacts along object boundaries.
-        </div>
-
-        <div class="comp-controls">
-          <div class="comp-row" id="ablationButtons">
-            <span class="comp-label">Case:</span>
-          </div>
-        </div>
-
-        <div class="slider-container" id="ablationSlider">
-          <img
-            src="static/ablation_w_or_wo_real_pair/synthetic/0.png"
-            class="slider-layout-img"
-            id="ablationLayoutImg"
-            alt=""
-          />
-          <div class="slider-pane pane-left">
-            <img src="static/ablation_w_or_wo_real_pair/synthetic/0.png" id="ablationLeftImg" alt="Synthetic pair" />
-          </div>
-          <div class="slider-pane pane-right">
-            <img src="static/ablation_w_or_wo_real_pair/real_pair/0.png" id="ablationRightImg" alt="With real pairs" />
-          </div>
-          <div class="slider-handle">
-            <div class="slider-handle-knob">&#9664;&#9654;</div>
-          </div>
-          <div class="slider-label left">Synthetic pair</div>
-          <div class="slider-label right">+ Real unpair</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section is-light" style="padding-bottom: 60px">
-      <div class="container">
-        <h2 class="section-title">Failure Cases</h2>
-        <div class="description-text" style="font-size: 1.2rem;" >
-          For severely blurred inputs, the model may hallucinate incorrect details (e.g., reconstructing "Jewelry shop"
-          as "Temnlry shop").
-        </div>
-
-        <div class="comp-controls">
-          <div class="comp-row" id="failureButtons"></div>
-        </div>
-
-        <div class="failure-row">
-          <div class="static-box">
-            <img id="failureInputImg" src="" alt="Input Image" />
-            <div class="slider-label left" style="left: 50%; transform: translateX(-50%)">Input image</div>
-          </div>
-
-          <div class="slider-container failure-slider-box" id="failureSlider">
-            <img src="" alt="" class="slider-layout-img" id="failureLayoutImg" />
-            <div class="slider-pane pane-left">
-              <img src="" alt="GT" id="failureLeftImg" />
-            </div>
-            <div class="slider-pane pane-right">
-              <img src="" alt="Ours" id="failureRightImg" />
-            </div>
-            <div class="slider-handle">
-              <div class="slider-handle-knob">&#9664;&#9654;</div>
-            </div>
-            <div class="slider-label left">GT</div>
-            <div class="slider-label right">Ours</div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="section is-white">
-      <div class="container">
-        <h2 class="section-title">Related Links</h2>
-        <div class="description-text" style="font-size: 1.2rem;">
-          There has been great works on refocusing or bokeh that were done concurrently by other researchers, feel free to check them out!
-        </div>
-        
-        <div style="display: flex; justify-content: center; margin-top: 20px;">
-          <ul style="text-align: left; font-size: 1.2rem; line-height: 1.8; list-style-type: disc;">
-            <li style="margin-bottom: 8px;">
-              <a href="https://learn2refocus.github.io/" target="_blank" style="color: #2c6dbc; text-decoration: none; font-weight: 500;">
-                [SIGGRAPH ASIA 2025] Learning to Refocus with Video Diffusion Models
-              </a>
-            </li>
-            <li style="margin-bottom: 8px;">
-              <a href="https://chandlerwang14.github.io/DiffCamera-Page/" target="_blank" style="color: #2c6dbc; text-decoration: none; font-weight: 500;">
-                [SIGGRAPH ASIA 2025] DiffCamera: Arbitrary Refocusing on Images
-              </a>
-            </li>
-            <li style="margin-bottom: 8px;">
-              <a href="https://www.ayshrv.com/defocus-blur-gen" target="_blank" style="color: #2c6dbc; text-decoration: none; font-weight: 500;">
-                [WACV 2026] Fine-grained Defocus Blur Control for Generative Image Models
-              </a>
-            </li>
-          </ul>
-        </div>
-  
       </div>
     </section>
     <section class="section" id="BibTeX">
@@ -1459,25 +1357,20 @@
         setupSlider('slider-wild-refocus')
         // 3. Deblur Comp
         const DEBLUR_CASES = [
-          'case_4',
-          'case_2',
-          'case_5',
-          'case_3',
           'case_0',
           'case_1',
-          'case_6',
-          'case_7',
-          'case_8',
-          'case_9',
+          'case_2',
+          'case_3',
+          'case_4',
         ]
         const DEBLUR_METHODS = [
           { key: 'Input', label: 'Input' },
           { key: 'GT', label: 'GT' },
-          { key: 'AIFNet', label: 'AIFNet' },
-          { key: 'IFANet', label: 'IFANet' },
           { key: 'DRBNet', label: 'DRBNet' },
-          { key: 'Restformer', label: 'Restormer' },
+          { key: 'Restormer', label: 'Restormer' },
           { key: 'INIKNet', label: 'INIKNet' },
+          { key: 'Bokehlicious', label: 'Bokehlicious' },
+          { key: 'Diffcamera', label: 'DiffCamera' },
         ]
         let currentDeblurCase = DEBLUR_CASES[0]
         let currentDeblurMethod = DEBLUR_METHODS[0].key
@@ -1526,23 +1419,20 @@
 
         // 4. Bokeh Comp
         const BOKEH_CASES = [
+          'case_0',
+          'case_1',
           'case_2',
           'case_3',
-          'case_0',
-          'case_10',
-          'case_1',
-          'case_11',
-          'case_6',
-          'case_7',
-          'case_8',
-          'case_9',
+          'case_4',
         ]
         const BOKEH_METHODS = [
           { key: 'Input', label: 'Input' },
           { key: 'GT', label: 'GT' },
           { key: 'BokehMe', label: 'BokehMe' },
-          { key: 'BokehDiff', label: 'BokehDiff' },
           { key: 'Bokehlicious', label: 'Bokehlicious' },
+          { key: 'BokehDiff', label: 'BokehDiff' },
+          { key: 'BokehDiffusion', label: 'Bokeh Diffusion' },
+          { key: 'Diffcamera', label: 'DiffCamera' },
         ]
         let currentBokehCase = BOKEH_CASES[0]
         let currentBokehMethod = BOKEH_METHODS[0].key
@@ -1591,24 +1481,17 @@
 
         // 5. Refocus Comp
         const REFOCUS_DATA = [
-          { label: 'Case 1', folder: 'case_9' },
-          { label: 'Case 2', folder: 'case_8' },
-          { label: 'Case 3', folder: 'case_7' },
-          { label: 'Case 4', folder: 'case_6' },
-          { label: 'Case 5', folder: 'case_5' },
-          { label: 'Case 6', folder: 'case_4' },
-          { label: 'Case 7', folder: 'case_3' },
-          { label: 'Case 8', folder: 'case_2' },
-          { label: 'Case 9', folder: 'case_1' },
-          { label: 'Case 10', folder: 'case_0' },
+          { label: 'Case 1', folder: 'case_4' },
+          { label: 'Case 2', folder: 'case_3' },
+          { label: 'Case 3', folder: 'case_2' },
+          { label: 'Case 4', folder: 'case_1' },
+          { label: 'Case 5', folder: 'case_0' },
         ]
         const REFOCUS_METHODS = [
           { key: 'Input.jpg', label: 'Input' },
           { key: 'GT.jpg', label: 'GT' },
-          { key: 'DRBNetXbokehdiff.jpg', label: 'DRBNet × BokehDiff' },
-          { key: 'DRBNetXbokehme.jpg', label: 'DRBNet × BokehMe' },
-          { key: 'RestformerXbokehdiff.jpg', label: 'Restormer × BokehDiff' },
-          { key: 'RestformerXbokehme.jpg', label: 'Restormer × BokehMe' },
+          { key: 'Diffcamera.jpg', label: 'DiffCamera' },
+          { key: 'learn2refocus.jpg', label: 'Learn2Refocus' },
         ]
         let currentRefocusFolder = REFOCUS_DATA[0].folder
         let currentRefocusBtnLabel = REFOCUS_DATA[0].label
@@ -1656,58 +1539,6 @@
         updateRefocusComp()
         setupSlider('refocusSlider')
 
-        // 6. Ablation
-        const ABLATION_CASES = ['0', '1', '2']
-        let currentAblationIndex = 0
-        const ablationBtns = document.getElementById('ablationButtons')
-        function updateAblation() {
-          const c = ABLATION_CASES[currentAblationIndex]
-          document.getElementById('ablationLeftImg').src = `static/ablation_w_or_wo_real_pair/synthetic/${c}.png`
-          document.getElementById('ablationRightImg').src = `static/ablation_w_or_wo_real_pair/real_pair/${c}.png`
-          document.getElementById('ablationLayoutImg').src = `static/ablation_w_or_wo_real_pair/synthetic/${c}.png`
-        }
-        ABLATION_CASES.forEach((c, i) => {
-          const btn = document.createElement('button')
-          btn.className = 'comp-btn' + (i === currentAblationIndex ? ' active' : '')
-          btn.textContent = `Case ${i}`
-          btn.onclick = () => {
-            currentAblationIndex = i
-            Array.from(ablationBtns.children).forEach((b) => b.classList.remove('active'))
-            btn.classList.add('active')
-            updateAblation()
-          }
-          ablationBtns.appendChild(btn)
-        })
-        updateAblation()
-        setupSlider('ablationSlider')
-
-        // 7. Failure
-        const FAILURE_CASES = [
-          { key: 'hallucinate_details', label: 'Hallucinated Details' },
-          { key: 'wrong_bokeh_blur', label: 'Wrong Bokeh Blur' },
-        ]
-        let currentFailureCase = FAILURE_CASES[0].key
-        const failureBtns = document.getElementById('failureButtons')
-        function updateFailureCase() {
-          document.getElementById('failureInputImg').src = `static/failure_case/${currentFailureCase}/input.png`
-          document.getElementById('failureLeftImg').src = `static/failure_case/${currentFailureCase}/GT.png`
-          document.getElementById('failureRightImg').src = `static/failure_case/${currentFailureCase}/Ours.png`
-          document.getElementById('failureLayoutImg').src = `static/failure_case/${currentFailureCase}/Ours.png`
-        }
-        FAILURE_CASES.forEach((item) => {
-          const btn = document.createElement('button')
-          btn.className = 'comp-btn' + (item.key === currentFailureCase ? ' active' : '')
-          btn.textContent = item.label
-          btn.onclick = () => {
-            currentFailureCase = item.key
-            Array.from(failureBtns.children).forEach((b) => b.classList.remove('active'))
-            btn.classList.add('active')
-            updateFailureCase()
-          }
-          failureBtns.appendChild(btn)
-        })
-        updateFailureCase()
-        setupSlider('failureSlider')
 
         // 8. Interactive
         const REGIONS = ['0', '1', '2']
